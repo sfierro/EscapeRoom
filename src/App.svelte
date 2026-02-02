@@ -1,8 +1,39 @@
 <script>
-  import entranceImage from './assets/entrance.jpg';
-  import Hotspot from './Hotspot.svelte';
-  import { entranceHotspot } from './hotspot-utils';
-  
+  import { rooms } from "./rooms";
+  import Hotspot from "./Hotspot.svelte";
+  import Navigation from "./Navigation.svelte";
+  import outsideImage from "./assets/outside.jpg";
+
+  let currentRoomIndex = $state(0);
+  let showingOutside = $state(false);
+
+  const currentRoom = $derived(rooms[currentRoomIndex]);
+  const hasPreviousRoom = $derived(currentRoomIndex > 0);
+  const hasNextRoom = $derived(currentRoomIndex < rooms.length - 1);
+
+  const displayImage = $derived(
+    showingOutside ? outsideImage : currentRoom.image,
+  );
+  const displayName = $derived(showingOutside ? "Outside" : currentRoom.name);
+
+  function goToPreviousRoom() {
+    if (hasPreviousRoom) {
+      currentRoomIndex--;
+      showingOutside = false;
+    }
+  }
+
+  function goToNextRoom() {
+    if (hasNextRoom) {
+      currentRoomIndex++;
+      showingOutside = false;
+    }
+  }
+
+  function handleEntranceHotspotClick() {
+    showingOutside = true;
+  }
+
   function handleDragStart(e) {
     e.preventDefault();
     return false;
@@ -11,15 +42,40 @@
 
 <main>
   <div class="home-screen">
-    <img 
-      src={entranceImage} 
-      alt="Entrance" 
-      class="entrance-image"
+    <img
+      src={displayImage}
+      alt={displayName}
+      class="room-image"
       draggable="false"
       ondragstart={handleDragStart}
       ondrag={handleDragStart}
     />
-    <Hotspot cx={entranceHotspot.cx} cy={entranceHotspot.cy} />
+    {#if !showingOutside}
+      {#each currentRoom.hotspots as hotspot}
+        <Hotspot
+          cx={hotspot.cx}
+          cy={hotspot.cy}
+          onClick={currentRoom.id === "entrance"
+            ? handleEntranceHotspotClick
+            : undefined}
+        />
+      {/each}
+    {/if}
+    {#if !showingOutside}
+      <Navigation
+        {hasPreviousRoom}
+        {hasNextRoom}
+        onPrevious={goToPreviousRoom}
+        onNext={goToNextRoom}
+      />
+    {:else}
+      <Navigation
+        hasPreviousRoom={false}
+        hasNextRoom={false}
+        onPrevious={() => (showingOutside = false)}
+        onNext={() => {}}
+      />
+    {/if}
   </div>
 </main>
 
@@ -45,7 +101,7 @@
     position: relative;
   }
 
-  .entrance-image {
+  .room-image {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -56,8 +112,8 @@
     -ms-user-select: none;
     pointer-events: auto;
   }
-  
-  .entrance-image::selection {
+
+  .room-image::selection {
     background: transparent;
   }
 </style>

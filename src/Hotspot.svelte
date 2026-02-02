@@ -1,8 +1,12 @@
 <script>
-    const { cx, cy } = $props();
+    const { cx, cy, onClick } = $props();
 
     function handleClick() {
-        console.log("Hotspot clicked");
+        if (onClick) {
+            onClick();
+        } else {
+            console.log("Hotspot clicked");
+        }
     }
 
     function handleKeydown(event) {
@@ -57,9 +61,9 @@
     }
 
     .circle {
-        fill: transparent;
-        stroke: rgba(255, 255, 255, 0.55);
-        stroke-width: 6;
+        fill: rgba(255, 255, 255, 0.25);
+        stroke: rgba(255, 255, 255, 0.5);
+        stroke-width: 2;
         opacity: 0;
         transition: opacity 150ms;
     }
