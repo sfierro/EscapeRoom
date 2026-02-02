@@ -41,5 +41,5 @@ npm run preview
 ## Project Structure
 
 - `src/App.svelte` - Main application component with the home screen
-- `Assets/HouseBackgrounds/` - Background images for the escape room
+- `src/assets/` - Background images for the escape room
 - `index.html` - Entry point HTML file
