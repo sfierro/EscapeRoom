@@ -7,7 +7,7 @@
 
   let currentRoomIndex = $state(0);
   let showingOutside = $state(false);
-  const locked = false;
+  const locked = true;
   let showingAlert = $state(false);
 
   const currentRoom = $derived(rooms[currentRoomIndex]);

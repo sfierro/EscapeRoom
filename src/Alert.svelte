@@ -1,4 +1,6 @@
 <script>
+    import NumberLock from "./NumberLock.svelte";
+
     const { onClose } = $props();
 
     function handleOverlayClick(event) {
@@ -11,6 +13,10 @@
         if (event.key === "Escape") {
             onClose();
         }
+    }
+
+    function handleEnter(value) {
+        return value === "0000";
     }
 </script>
 
@@ -41,8 +47,9 @@
                 />
             </svg>
         </button>
-        <h1 id="alert-title" class="alert-title">Alert</h1>
-        <p class="alert-message">This is an alert</p>
+        <div class="alert-content">
+            <NumberLock digits={4} onEnter={handleEnter} />
+        </div>
     </div>
 </div>
 
@@ -65,9 +72,14 @@
         color: #000;
         border-radius: 12px;
         padding: 24px 32px;
-        max-width: 400px;
+        min-width: 300px;
+        max-width: 90vw;
+        width: fit-content;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .close-button {
@@ -94,14 +106,11 @@
         outline: none;
     }
 
-    .alert-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin: 0 0 8px 0;
-    }
-
-    .alert-message {
-        font-size: 0.875rem;
-        margin: 0;
+    .alert-content {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 8px;
     }
 </style>
