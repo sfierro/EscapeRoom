@@ -2,10 +2,13 @@
   import { rooms } from "./rooms";
   import Hotspot from "./Hotspot.svelte";
   import Navigation from "./Navigation.svelte";
+  import Alert from "./Alert.svelte";
   import outsideImage from "./assets/outside.jpg";
 
   let currentRoomIndex = $state(0);
   let showingOutside = $state(false);
+  const locked = false;
+  let showingAlert = $state(false);
 
   const currentRoom = $derived(rooms[currentRoomIndex]);
   const hasPreviousRoom = $derived(currentRoomIndex > 0);
@@ -31,7 +34,11 @@
   }
 
   function handleEntranceHotspotClick() {
-    showingOutside = true;
+    if (locked) {
+      showingAlert = true;
+    } else {
+      showingOutside = true;
+    }
   }
 
   function handleDragStart(e) {
@@ -75,6 +82,9 @@
         onPrevious={() => (showingOutside = false)}
         onNext={() => {}}
       />
+    {/if}
+    {#if showingAlert}
+      <Alert onClose={() => (showingAlert = false)} />
     {/if}
   </div>
 </main>

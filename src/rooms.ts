@@ -48,12 +48,6 @@ export const rooms: Room[] = [
         hotspots: []
     },
     {
-        id: 'dining',
-        name: 'Dining Room',
-        image: diningImage,
-        hotspots: []
-    },
-    {
         id: 'dining_kitchen',
         name: 'Dining Kitchen',
         image: diningKitchenImage,
