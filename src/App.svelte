@@ -49,40 +49,52 @@
 
 <main>
   <div class="home-screen">
-    <img
-      src={displayImage}
-      alt={displayName}
-      class="room-image"
-      draggable="false"
-      ondragstart={handleDragStart}
-      ondrag={handleDragStart}
-    />
-    {#if !showingOutside}
-      {#each currentRoom.hotspots as hotspot}
-        <Hotspot
-          cx={hotspot.cx}
-          cy={hotspot.cy}
-          onClick={currentRoom.id === "entrance"
-            ? handleEntranceHotspotClick
-            : undefined}
+    <div class="game-container">
+      <div class="image-container">
+        <img
+          src={displayImage}
+          alt={displayName}
+          class="room-image"
+          draggable="false"
+          ondragstart={handleDragStart}
+          ondrag={handleDragStart}
         />
-      {/each}
-    {/if}
-    {#if !showingOutside}
-      <Navigation
-        {hasPreviousRoom}
-        {hasNextRoom}
-        onPrevious={goToPreviousRoom}
-        onNext={goToNextRoom}
-      />
-    {:else}
-      <Navigation
-        hasPreviousRoom={false}
-        hasNextRoom={false}
-        onPrevious={() => (showingOutside = false)}
-        onNext={() => {}}
-      />
-    {/if}
+        {#if !showingOutside}
+          {#each currentRoom.hotspots as hotspot}
+            <Hotspot
+              cx={hotspot.cx}
+              cy={hotspot.cy}
+              onClick={currentRoom.id === "entrance"
+                ? handleEntranceHotspotClick
+                : undefined}
+            />
+          {/each}
+        {/if}
+        {#if !showingOutside}
+          <Navigation
+            {hasPreviousRoom}
+            {hasNextRoom}
+            onPrevious={goToPreviousRoom}
+            onNext={goToNextRoom}
+          />
+        {:else}
+          <Navigation
+            hasPreviousRoom={false}
+            hasNextRoom={false}
+            onPrevious={() => (showingOutside = false)}
+            onNext={() => {}}
+          />
+        {/if}
+      </div>
+      <div class="inventory-container">
+        <div class="inventory-title">Inventory</div>
+        <div class="inventory-slots">
+          {#each Array(12) as _, i}
+            <div class="inventory-slot"></div>
+          {/each}
+        </div>
+      </div>
+    </div>
     {#if showingAlert}
       <Alert onClose={() => (showingAlert = false)} />
     {/if}
@@ -109,11 +121,27 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    background-color: #1a1a1a;
+  }
+
+  .game-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+  }
+
+  .image-container {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
   }
 
   .room-image {
-    width: 100%;
     height: 100%;
+    width: auto;
+    max-width: calc(100vw - 200px);
     object-fit: contain;
     display: block;
     user-select: none;
@@ -121,6 +149,48 @@
     -moz-user-select: none;
     -ms-user-select: none;
     pointer-events: auto;
+  }
+
+  .inventory-container {
+    width: 200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 16px;
+    z-index: 20;
+  }
+
+  .inventory-title {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .inventory-slots {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    flex: 1;
+    align-content: start;
+  }
+
+  .inventory-slot {
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .inventory-slot:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
   }
 
   .room-image::selection {

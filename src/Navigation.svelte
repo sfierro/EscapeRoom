@@ -54,12 +54,11 @@
     .navigation-container {
         position: absolute;
         bottom: 20px;
-        left: 0;
-        right: 0;
+        left: 20px;
+        right: 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 20px;
         pointer-events: none;
         z-index: 10;
     }
