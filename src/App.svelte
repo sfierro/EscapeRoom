@@ -3,12 +3,20 @@
   import Hotspot from "./Hotspot.svelte";
   import Navigation from "./Navigation.svelte";
   import Alert from "./Alert.svelte";
+  import SlidingPuzzle from "./SlidingPuzzle.svelte";
+  import NumberLock from "./NumberLock.svelte";
   import outsideImage from "./assets/outside.jpg";
 
   let currentRoomIndex = $state(0);
   let showingOutside = $state(false);
-  const locked = true;
-  let showingAlert = $state(false);
+
+  // ─── Overlay / popup state ─────────────────────────────────
+  let showingDoorAlert = $state(false);
+  let showingPainting = $state(false);
+  let showingDrawer = $state(false);
+
+  // ─── Inventory ─────────────────────────────────────────────
+  let inventory = $state([]);
 
   const currentRoom = $derived(rooms[currentRoomIndex]);
   const hasPreviousRoom = $derived(currentRoomIndex > 0);
@@ -33,12 +41,31 @@
     }
   }
 
-  function handleEntranceHotspotClick() {
-    if (locked) {
-      showingAlert = true;
-    } else {
-      showingOutside = true;
+  // ─── Per-hotspot click routing ─────────────────────────────
+  function handleHotspotClick(id) {
+    if (id === "door") {
+      if (inventory.includes("key")) {
+        inventory.splice(inventory.indexOf("key"), 1);
+        showingOutside = true;
+      } else {
+        showingDoorAlert = true;
+      }
+    } else if (id === "painting") {
+      showingPainting = true;
+    } else if (id === "drawer") {
+      showingDrawer = true;
     }
+  }
+
+  // ─── Drawer number-lock handler ────────────────────────────
+  function handleDrawerCode(value) {
+    if (value === "2817") {
+      if (!inventory.includes("key")) {
+        inventory.push("key");
+      }
+      return true;
+    }
+    return false;
   }
 
   function handleDragStart(e) {
@@ -59,16 +86,22 @@
           ondragstart={handleDragStart}
           ondrag={handleDragStart}
         />
-        {#if !showingOutside}
-          {#each currentRoom.hotspots as hotspot}
-            <Hotspot
-              cx={hotspot.cx}
-              cy={hotspot.cy}
-              onClick={currentRoom.id === "entrance"
-                ? handleEntranceHotspotClick
-                : undefined}
-            />
-          {/each}
+        {#if !showingOutside && currentRoom.hotspots.length > 0}
+          <svg
+            class="hotspots-overlay"
+            viewBox="0 0 1920 1080"
+            preserveAspectRatio="xMidYMid meet"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {#each currentRoom.hotspots as hotspot}
+              <Hotspot
+                cx={hotspot.cx}
+                cy={hotspot.cy}
+                onClick={() => handleHotspotClick(hotspot.id)}
+              />
+            {/each}
+          </svg>
         {/if}
         {#if !showingOutside}
           <Navigation
@@ -85,18 +118,45 @@
             onNext={() => {}}
           />
         {/if}
+        {#if showingOutside}
+          <div class="escaped-overlay">
+            <h1 class="escaped-text">You Escaped!</h1>
+          </div>
+        {/if}
       </div>
-      <div class="inventory-container">
+      <div class="inventory-container" class:hidden={showingOutside}>
         <div class="inventory-title">Inventory</div>
         <div class="inventory-slots">
           {#each Array(12) as _, i}
-            <div class="inventory-slot"></div>
+            <div class="inventory-slot">
+              {#if inventory[i] === "key"}
+                <span class="inventory-item">🔑</span>
+              {/if}
+            </div>
           {/each}
         </div>
       </div>
     </div>
-    {#if showingAlert}
-      <Alert onClose={() => (showingAlert = false)} />
+
+    <!-- Door alert -->
+    {#if showingDoorAlert}
+      <Alert onClose={() => (showingDoorAlert = false)}>
+        <p class="alert-text">This door is locked!</p>
+      </Alert>
+    {/if}
+
+    <!-- Painting → sliding puzzle -->
+    {#if showingPainting}
+      <Alert onClose={() => (showingPainting = false)}>
+        <SlidingPuzzle />
+      </Alert>
+    {/if}
+
+    <!-- Drawer → number lock -->
+    {#if showingDrawer}
+      <Alert onClose={() => (showingDrawer = false)}>
+        <NumberLock digits={4} onEnter={handleDrawerCode} />
+      </Alert>
     {/if}
   </div>
 </main>
@@ -151,6 +211,22 @@
     pointer-events: auto;
   }
 
+  .hotspots-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -moz-user-select: none;
+  }
+
+  .hotspots-overlay :global(.hotspot-group) {
+    pointer-events: auto;
+  }
+
   .inventory-container {
     width: 200px;
     height: 100%;
@@ -161,6 +237,10 @@
     border-radius: 8px;
     padding: 16px;
     z-index: 20;
+  }
+
+  .inventory-container.hidden {
+    display: none;
   }
 
   .inventory-title {
@@ -186,11 +266,68 @@
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .inventory-slot:hover {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .inventory-item {
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .alert-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 8px 16px;
+  }
+
+  .escaped-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 15;
+  }
+
+  .escaped-text {
+    font-size: 4rem;
+    font-weight: 900;
+    color: gold;
+    text-shadow:
+      0 0 20px rgba(255, 215, 0, 0.6),
+      0 0 40px rgba(255, 215, 0, 0.3),
+      2px 2px 4px rgba(0, 0, 0, 0.7);
+    animation: escapePulse 2s ease-in-out infinite;
+  }
+
+  @keyframes escapePulse {
+    0%,
+    100% {
+      transform: scale(1);
+      text-shadow:
+        0 0 20px rgba(255, 215, 0, 0.6),
+        0 0 40px rgba(255, 215, 0, 0.3),
+        2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+    50% {
+      transform: scale(1.05);
+      text-shadow:
+        0 0 30px rgba(255, 215, 0, 0.8),
+        0 0 60px rgba(255, 215, 0, 0.5),
+        2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
   }
 
   .room-image::selection {

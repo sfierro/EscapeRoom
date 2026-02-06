@@ -9,6 +9,7 @@ import masterBedroomImage from './assets/master_bedroom.jpg';
 import singleBedroomImage from './assets/single_bedroom.jpg';
 
 export interface Hotspot {
+    id: string;
     cx: number;
     cy: number;
 }
@@ -26,49 +27,51 @@ export const rooms: Room[] = [
         name: 'Entrance',
         image: entranceImage,
         hotspots: [
-            { cx: 990, cy: 558 }
+            { id: 'door', cx: 990, cy: 558 },
+            { id: 'painting', cx: 350, cy: 460 },
+            { id: 'drawer', cx: 1300, cy: 715 }
         ]
     },
-    {
-        id: 'hallway',
-        name: 'Hallway',
-        image: hallwayImage,
-        hotspots: []
-    },
-    {
-        id: 'lounge',
-        name: 'Lounge',
-        image: loungeImage,
-        hotspots: []
-    },
-    {
-        id: 'kitchen',
-        name: 'Kitchen',
-        image: kitchenImage,
-        hotspots: []
-    },
-    {
-        id: 'dining_kitchen',
-        name: 'Dining Kitchen',
-        image: diningKitchenImage,
-        hotspots: []
-    },
-    {
-        id: 'bathroom',
-        name: 'Bathroom',
-        image: bathroomImage,
-        hotspots: []
-    },
-    {
-        id: 'master_bedroom',
-        name: 'Master Bedroom',
-        image: masterBedroomImage,
-        hotspots: []
-    },
-    {
-        id: 'single_bedroom',
-        name: 'Single Bedroom',
-        image: singleBedroomImage,
-        hotspots: []
-    }
+    // {
+    //     id: 'hallway',
+    //     name: 'Hallway',
+    //     image: hallwayImage,
+    //     hotspots: []
+    // },
+    // {
+    //     id: 'lounge',
+    //     name: 'Lounge',
+    //     image: loungeImage,
+    //     hotspots: []
+    // },
+    // {
+    //     id: 'kitchen',
+    //     name: 'Kitchen',
+    //     image: kitchenImage,
+    //     hotspots: []
+    // },
+    // {
+    //     id: 'dining_kitchen',
+    //     name: 'Dining Kitchen',
+    //     image: diningKitchenImage,
+    //     hotspots: []
+    // },
+    // {
+    //     id: 'bathroom',
+    //     name: 'Bathroom',
+    //     image: bathroomImage,
+    //     hotspots: []
+    // },
+    // {
+    //     id: 'master_bedroom',
+    //     name: 'Master Bedroom',
+    //     image: masterBedroomImage,
+    //     hotspots: []
+    // },
+    // {
+    //     id: 'single_bedroom',
+    //     name: 'Single Bedroom',
+    //     image: singleBedroomImage,
+    //     hotspots: []
+    // }
 ];

@@ -1,7 +1,5 @@
 <script>
-    import NumberLock from "./NumberLock.svelte";
-
-    const { onClose } = $props();
+    const { onClose, children } = $props();
 
     function handleOverlayClick(event) {
         if (event.target === event.currentTarget) {
@@ -14,10 +12,6 @@
             onClose();
         }
     }
-
-    function handleEnter(value) {
-        return value === "0000";
-    }
 </script>
 
 <div
@@ -26,7 +20,6 @@
     onkeydown={handleOverlayKeydown}
     role="dialog"
     aria-modal="true"
-    aria-labelledby="alert-title"
     tabindex="-1"
 >
     <div class="alert">
@@ -48,7 +41,7 @@
             </svg>
         </button>
         <div class="alert-content">
-            <NumberLock digits={4} onEnter={handleEnter} />
+            {@render children()}
         </div>
     </div>
 </div>
