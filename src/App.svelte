@@ -1,49 +1,62 @@
 <script>
-  import { rooms } from "./rooms";
+  import { roomsById } from "./rooms";
   import Hotspot from "./Hotspot.svelte";
   import Navigation from "./Navigation.svelte";
   import Alert from "./Alert.svelte";
   import SlidingPuzzle from "./SlidingPuzzle.svelte";
   import NumberLock from "./NumberLock.svelte";
+  import PasswordLock from "./PasswordLock.svelte";
   import outsideImage from "./assets/outside.jpg";
+  import booksImage from "./assets/books.png";
 
-  let currentRoomIndex = $state(0);
+  let currentRoomId = $state("single_bedroom");
   let showingOutside = $state(false);
 
   // ─── Overlay / popup state ─────────────────────────────────
   let showingDoorAlert = $state(false);
   let showingPainting = $state(false);
   let showingDrawer = $state(false);
+  let showingComputer = $state(false);
+  let showingBooks = $state(false);
 
   // ─── Inventory ─────────────────────────────────────────────
   let inventory = $state([]);
 
-  const currentRoom = $derived(rooms[currentRoomIndex]);
-  const hasPreviousRoom = $derived(currentRoomIndex > 0);
-  const hasNextRoom = $derived(currentRoomIndex < rooms.length - 1);
+  const currentRoom = $derived(roomsById.get(currentRoomId));
+  const hasPreviousRoom = $derived(!!currentRoom.previousRoomId);
+  const hasNextRoom = $derived(!!currentRoom.nextRoomId);
 
   const displayImage = $derived(
     showingOutside ? outsideImage : currentRoom.image,
   );
   const displayName = $derived(showingOutside ? "Outside" : currentRoom.name);
 
-  function goToPreviousRoom() {
-    if (hasPreviousRoom) {
-      currentRoomIndex--;
+  function navigateToRoom(roomId) {
+    if (roomsById.has(roomId)) {
+      currentRoomId = roomId;
       showingOutside = false;
     }
   }
 
+  function goToPreviousRoom() {
+    if (currentRoom.previousRoomId) {
+      navigateToRoom(currentRoom.previousRoomId);
+    }
+  }
+
   function goToNextRoom() {
-    if (hasNextRoom) {
-      currentRoomIndex++;
-      showingOutside = false;
+    if (currentRoom.nextRoomId) {
+      navigateToRoom(currentRoom.nextRoomId);
     }
   }
 
   // ─── Per-hotspot click routing ─────────────────────────────
   function handleHotspotClick(id) {
-    if (id === "door") {
+    if (id === "bedroom_door") {
+      navigateToRoom("single_bedroom");
+    } else if (id === "bathroom_door") {
+      navigateToRoom("bathroom");
+    } else if (id === "door") {
       if (inventory.includes("key")) {
         inventory.splice(inventory.indexOf("key"), 1);
         showingOutside = true;
@@ -54,6 +67,10 @@
       showingPainting = true;
     } else if (id === "drawer") {
       showingDrawer = true;
+    } else if (id === "computer") {
+      showingComputer = true;
+    } else if (id === "books") {
+      showingBooks = true;
     }
   }
 
@@ -63,6 +80,14 @@
       if (!inventory.includes("key")) {
         inventory.push("key");
       }
+      return true;
+    }
+    return false;
+  }
+
+  // ─── Computer password handler ────────────────────────────
+  function handleComputerPassword(value) {
+    if (value === "blackcat") {
       return true;
     }
     return false;
@@ -156,6 +181,20 @@
     {#if showingDrawer}
       <Alert onClose={() => (showingDrawer = false)}>
         <NumberLock digits={4} onEnter={handleDrawerCode} />
+      </Alert>
+    {/if}
+
+    <!-- Computer → password lock -->
+    {#if showingComputer}
+      <Alert onClose={() => (showingComputer = false)}>
+        <PasswordLock onEnter={handleComputerPassword} />
+      </Alert>
+    {/if}
+
+    <!-- Books → text -->
+    {#if showingBooks}
+      <Alert onClose={() => (showingBooks = false)} transparent>
+        <img src={booksImage} alt="Books" class="books-image" />
       </Alert>
     {/if}
   </div>
@@ -279,6 +318,13 @@
   .inventory-item {
     font-size: 28px;
     line-height: 1;
+  }
+
+  .books-image {
+    max-width: 80vw;
+    max-height: 80vh;
+    object-fit: contain;
+    display: block;
   }
 
   .alert-text {

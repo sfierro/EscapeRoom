@@ -1,5 +1,5 @@
 <script>
-    const { onClose, children } = $props();
+    const { onClose, children, transparent = false } = $props();
 
     function handleOverlayClick(event) {
         if (event.target === event.currentTarget) {
@@ -22,7 +22,7 @@
     aria-modal="true"
     tabindex="-1"
 >
-    <div class="alert">
+    <div class="alert" class:transparent>
         <button class="close-button" onclick={onClose} aria-label="Close">
             <svg
                 width="20"
@@ -105,5 +105,29 @@
         justify-content: center;
         align-items: center;
         margin-top: 8px;
+    }
+
+    .alert.transparent {
+        background-color: transparent;
+        padding: 0;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    .alert.transparent .alert-content {
+        margin-top: 0;
+    }
+
+    .alert.transparent .close-button {
+        top: 8px;
+        right: 8px;
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    .alert.transparent .close-button:hover {
+        background-color: rgba(0, 0, 0, 0.7);
     }
 </style>
