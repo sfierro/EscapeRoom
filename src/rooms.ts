@@ -32,6 +32,7 @@ export const rooms: Room[] = [
         hotspots: [
             { id: 'computer', cx: 1690, cy: 360 },
             { id: 'books', cx: 1250, cy: 455 },
+            { id: 'canister', cx: 1083, cy: 658 },
         ],
     },
     {
@@ -41,6 +42,7 @@ export const rooms: Room[] = [
         hotspots: [
             { id: 'bedroom_door', cx: 425, cy: 630 },
             { id: 'bathroom_door', cx: 1650, cy: 550 },
+            { id: 'hallway_painting', cx: 1047, cy: 423 },
         ],
         nextRoomId: 'kitchen',
     },
@@ -48,14 +50,20 @@ export const rooms: Room[] = [
         id: 'bathroom',
         name: 'Bathroom',
         image: bathroomImage,
-        hotspots: [],
+        hotspots: [
+            { id: 'toothbrush_holder', cx: 388, cy: 451 },
+            { id: 'medicine_cabinet', cx: 262, cy: 271 },
+        ],
         nextRoomId: 'hallway',
     },
     {
         id: 'kitchen',
         name: 'Kitchen',
         image: kitchenImage,
-        hotspots: [],
+        hotspots: [
+            { id: 'spice_rack', cx: 1404, cy: 404 },
+            { id: 'kitchen_drawer', cx: 853, cy: 657 },
+        ],
         previousRoomId: 'hallway',
         nextRoomId: 'lounge',
     },
@@ -63,7 +71,10 @@ export const rooms: Room[] = [
         id: 'lounge',
         name: 'Lounge',
         image: loungeImage,
-        hotspots: [],
+        hotspots: [
+            { id: 'safe', cx: 90, cy: 768 },
+            { id: 'remote', cx: 966, cy: 719 },
+        ],
         previousRoomId: 'kitchen',
         nextRoomId: 'entrance',
     },
@@ -73,8 +84,11 @@ export const rooms: Room[] = [
         image: entranceImage,
         hotspots: [
             { id: 'door', cx: 990, cy: 558 },
-            { id: 'painting', cx: 350, cy: 460 },
-            { id: 'drawer', cx: 1300, cy: 715 }
+            { id: 'painting', cx: 353, cy: 467 },
+            { id: 'drawer', cx: 1300, cy: 715 },
+            { id: 'flower_pot', cx: 1333, cy: 381 },
+            { id: 'boots', cx: 1098, cy: 834 },
+            { id: 'key_bowl', cx: 1391, cy: 595 },
         ],
         previousRoomId: 'lounge',
     },
@@ -86,16 +100,13 @@ export const roomsById = new Map(rooms.map(r => [r.id, r]));
 // to unlock directional lock oncanister and inside canister is a toothbrush of certain color. the toothbrush holder in the bathroom has 2 toothbrushes and a missing one.
 // when you click on the toothbrush holder before you have the toothbrush, it will say "looks like one toothbrush is missing". once you put the missing toothbrush in the holder,
 // the order left to right, and each toothbrush has a different number of stripes on it. These 3 numbers help you unlock the medicine cabinet (number lock).
-// Inside the medicine cabinet is an array of perscription bottles with different color pills. This will be the order of the spice rack bottles in the kitchen.
+// Inside the medicine cabinet is an array of perscription bottles with different color pills. This will be the order of the 6 spice rack bottles in the kitchen.
 // In the kitchen, the spice rack bottles have labels on them. Tumeric, salt, pepper, etc. Each spice label has a number of ounces on it (e.g. tumeric is 2oz, pepper is 1oz etc)
 // And the numbers from the labels in the order of the pill bottle colors (left to right) will help you determine the combination of the safe in the living room.
 // Inside the safe is a puzzle to determine the channel to turn the TV to. On the TV screen once on the right channel, there will be a series of repeating symbols in a specific order.
 // This will give you the key to the symbol lock on the cabinet
 // Inside the cabinet is a flathead screwdriver.
-// Using the screwdriver on the painting pries off the frame, revealing the back is a sliding puzzle.
-// Once solved, the sliding puzzle reveals the number code for the number lock on the drawer. Inside the drawer is a key.
-// The key opens the front door to the outside.
+// Using the screwdriver on the painting pries off the frame, revealing the sliding puzzle.
 
-// Note for the spice rack to make it harder we can have the labels on the wrong bottles and you have to move them to the correct bottles (can use the spice / color to match or the ounce and how full the bottle looks).
-
-// there should be hotspots on things that you can interact with but don't have to interact with (like the flower pot) and it says "these are pretty flowers!"
+// there should also be hotspots on things that you can interact with but don't have to interact with (like the flower pot) and it says "these are pretty flowers!"
+// hallway_painting, flower_pot, boots, key_bowl (e.g. you see keys but none of them work on the front door)

@@ -6,18 +6,45 @@
   import SlidingPuzzle from "./SlidingPuzzle.svelte";
   import NumberLock from "./NumberLock.svelte";
   import PasswordLock from "./PasswordLock.svelte";
+  import DirectionalLock from "./DirectionalLock.svelte";
   import outsideImage from "./assets/outside.jpg";
   import booksImage from "./assets/books.png";
+  import placeholderImage from "./assets/placeholder.jpg";
 
   let currentRoomId = $state("single_bedroom");
   let showingOutside = $state(false);
 
   // ─── Overlay / popup state ─────────────────────────────────
   let showingDoorAlert = $state(false);
-  let showingPainting = $state(false);
-  let showingDrawer = $state(false);
   let showingComputer = $state(false);
   let showingBooks = $state(false);
+  let showingCanister = $state(false);
+  let showingToothbrushHolder = $state(false);
+  let showingMedicineCabinet = $state(false);
+  let showingSpiceRack = $state(false);
+  let showingSafe = $state(false);
+  let showingRemote = $state(false);
+  let showingDrawer = $state(false);
+  let showingKitchenDrawer = $state(false);
+  let showingPainting = $state(false);
+  // Flavor-text hotspots
+  let showingHallwayPainting = $state(false);
+  let showingFlowerPot = $state(false);
+  let showingBoots = $state(false);
+  let showingKeyBowl = $state(false);
+
+  // ─── Game progress flags ─────────────────────────────────────
+  let computerSolved = $state(false);
+  let canisterOpen = $state(false);
+  let toothbrushPlaced = $state(false);
+  let medicineCabinetOpen = $state(false);
+  let safeOpen = $state(false);
+  let tvCorrectChannel = $state(false);
+  let kitchenDrawerOpen = $state(false);
+  let screwdriverCollected = $state(false);
+  let drawerUnlocked = $state(false);
+  let drawerKeyCollected = $state(false);
+  let paintingPried = $state(false);
 
   // ─── Inventory ─────────────────────────────────────────────
   let inventory = $state([]);
@@ -52,45 +79,157 @@
 
   // ─── Per-hotspot click routing ─────────────────────────────
   function handleHotspotClick(id) {
+    // Navigation hotspots
     if (id === "bedroom_door") {
       navigateToRoom("single_bedroom");
     } else if (id === "bathroom_door") {
       navigateToRoom("bathroom");
-    } else if (id === "door") {
-      if (inventory.includes("key")) {
-        inventory.splice(inventory.indexOf("key"), 1);
-        showingOutside = true;
-      } else {
-        showingDoorAlert = true;
-      }
-    } else if (id === "painting") {
-      showingPainting = true;
-    } else if (id === "drawer") {
-      showingDrawer = true;
-    } else if (id === "computer") {
+    }
+    // Front door
+    else if (id === "door") {
+      showingDoorAlert = true;
+    }
+    // Single bedroom
+    else if (id === "computer") {
       showingComputer = true;
     } else if (id === "books") {
       showingBooks = true;
+    } else if (id === "canister") {
+      showingCanister = true;
     }
-  }
-
-  // ─── Drawer number-lock handler ────────────────────────────
-  function handleDrawerCode(value) {
-    if (value === "2817") {
-      if (!inventory.includes("key")) {
-        inventory.push("key");
+    // Bathroom
+    else if (id === "toothbrush_holder") {
+      if (inventory.includes("toothbrush") && !toothbrushPlaced) {
+        inventory.splice(inventory.indexOf("toothbrush"), 1);
+        toothbrushPlaced = true;
       }
-      return true;
+      showingToothbrushHolder = true;
+    } else if (id === "medicine_cabinet") {
+      showingMedicineCabinet = true;
     }
-    return false;
+    // Kitchen
+    else if (id === "spice_rack") {
+      showingSpiceRack = true;
+    } else if (id === "kitchen_drawer") {
+      showingKitchenDrawer = true;
+    }
+    // Lounge
+    else if (id === "safe") {
+      showingSafe = true;
+    } else if (id === "remote") {
+      showingRemote = true;
+    }
+    // Entrance
+    else if (id === "drawer") {
+      showingDrawer = true;
+    } else if (id === "painting") {
+      showingPainting = true;
+    }
+    // Flavor-text hotspots
+    else if (id === "hallway_painting") {
+      showingHallwayPainting = true;
+    } else if (id === "flower_pot") {
+      showingFlowerPot = true;
+    } else if (id === "boots") {
+      showingBoots = true;
+    } else if (id === "key_bowl") {
+      showingKeyBowl = true;
+    }
   }
 
   // ─── Computer password handler ────────────────────────────
   function handleComputerPassword(value) {
     if (value === "blackcat") {
+      computerSolved = true;
       return true;
     }
     return false;
+  }
+
+  // ─── Canister directional lock handler ────────────────────
+  function handleCanisterCode(value) {
+    if (value === "URDL") {
+      canisterOpen = true;
+      if (!inventory.includes("toothbrush")) {
+        inventory.push("toothbrush");
+      }
+      return true;
+    }
+    return false;
+  }
+
+  // ─── Medicine cabinet number lock handler ─────────────────
+  function handleMedicineCabinetCode(value) {
+    if (value === "417") {
+      medicineCabinetOpen = true;
+      return true;
+    }
+    return false;
+  }
+
+  // ─── Safe number lock handler ─────────────────────────────
+  function handleSafeCode(value) {
+    if (value === "391582") {
+      safeOpen = true;
+      return true;
+    }
+    return false;
+  }
+
+  // ─── Remote / TV channel handler ──────────────────────────
+  function handleRemoteChannel(value) {
+    if (value === "73") {
+      tvCorrectChannel = true;
+      return true;
+    }
+    return false;
+  }
+
+  // ─── Kitchen drawer (symbol lock) handler ──────────────────
+  function handleKitchenDrawerCode(value) {
+    if (value === "placeholder") {
+      kitchenDrawerOpen = true;
+      return true;
+    }
+    return false;
+  }
+
+  function collectScrewdriver() {
+    if (!screwdriverCollected) {
+      screwdriverCollected = true;
+      if (!inventory.includes("screwdriver")) {
+        inventory.push("screwdriver");
+      }
+    }
+  }
+
+  // ─── Entrance drawer number lock handler ───────────────────
+  function handleDrawerCode(value) {
+    if (value === "2817") {
+      drawerUnlocked = true;
+      return true;
+    }
+    return false;
+  }
+
+  function collectKey() {
+    if (!drawerKeyCollected) {
+      drawerKeyCollected = true;
+      if (!inventory.includes("key")) {
+        inventory.push("key");
+      }
+    }
+  }
+
+  function useKeyOnDoor() {
+    inventory.splice(inventory.indexOf("key"), 1);
+    showingDoorAlert = false;
+    showingOutside = true;
+  }
+
+  function useScrewdriverOnPainting() {
+    inventory.splice(inventory.indexOf("screwdriver"), 1);
+    paintingPried = true;
   }
 
   function handleDragStart(e) {
@@ -102,7 +241,18 @@
 <main>
   <div class="home-screen">
     <div class="game-container">
-      <div class="image-container">
+      <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+      <div
+        class="image-container"
+        onclick={(e) => {
+          const img = e.currentTarget.querySelector(".room-image");
+          if (!img) return;
+          const rect = img.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 1920;
+          const y = ((e.clientY - rect.top) / rect.height) * 1080;
+          console.log(`cx: ${Math.round(x)}, cy: ${Math.round(y)}`);
+        }}
+      >
         <img
           src={displayImage}
           alt={displayName}
@@ -156,6 +306,10 @@
             <div class="inventory-slot">
               {#if inventory[i] === "key"}
                 <span class="inventory-item">🔑</span>
+              {:else if inventory[i] === "toothbrush"}
+                <span class="inventory-item">🪥</span>
+              {:else if inventory[i] === "screwdriver"}
+                <span class="inventory-item">🪛</span>
               {/if}
             </div>
           {/each}
@@ -163,38 +317,258 @@
       </div>
     </div>
 
+    <!-- ═══════════════ ALERTS / POPUPS ═══════════════ -->
+
     <!-- Door alert -->
     {#if showingDoorAlert}
       <Alert onClose={() => (showingDoorAlert = false)}>
-        <p class="alert-text">This door is locked!</p>
+        {#if inventory.includes("key")}
+          <div class="found-item-container">
+            <span class="found-item-emoji">🔑</span>
+            <p class="alert-text">Use the key on the door?</p>
+            <button class="collect-button" onclick={useKeyOnDoor}>
+              Use key
+            </button>
+          </div>
+        {:else}
+          <p class="alert-text">This door is locked!</p>
+        {/if}
       </Alert>
     {/if}
 
-    <!-- Painting → sliding puzzle -->
-    {#if showingPainting}
-      <Alert onClose={() => (showingPainting = false)}>
-        <SlidingPuzzle />
-      </Alert>
-    {/if}
-
-    <!-- Drawer → number lock -->
-    {#if showingDrawer}
-      <Alert onClose={() => (showingDrawer = false)}>
-        <NumberLock digits={4} onEnter={handleDrawerCode} />
-      </Alert>
-    {/if}
-
-    <!-- Computer → password lock -->
+    <!-- Computer → password lock or maze clue -->
     {#if showingComputer}
       <Alert onClose={() => (showingComputer = false)}>
-        <PasswordLock onEnter={handleComputerPassword} />
+        {#if computerSolved}
+          <div class="clue-container">
+            <img src={placeholderImage} alt="Maze" class="clue-image" />
+            <p class="clue-text">
+              The screen shows a cat navigating a maze.<br />
+              The cat's path: ↑ → ↓ ←
+            </p>
+          </div>
+        {:else}
+          <PasswordLock onEnter={handleComputerPassword} />
+        {/if}
       </Alert>
     {/if}
 
-    <!-- Books → text -->
+    <!-- Books -->
     {#if showingBooks}
       <Alert onClose={() => (showingBooks = false)} transparent>
         <img src={booksImage} alt="Books" class="books-image" />
+      </Alert>
+    {/if}
+
+    <!-- Canister → directional lock or empty -->
+    {#if showingCanister}
+      <Alert onClose={() => (showingCanister = false)}>
+        {#if canisterOpen}
+          <p class="alert-text">The canister is empty.</p>
+        {:else}
+          <DirectionalLock length={4} onEnter={handleCanisterCode} />
+        {/if}
+      </Alert>
+    {/if}
+
+    <!-- Toothbrush Holder -->
+    {#if showingToothbrushHolder}
+      <Alert onClose={() => (showingToothbrushHolder = false)}>
+        {#if toothbrushPlaced}
+          <div class="clue-container">
+            <img src={placeholderImage} alt="Toothbrushes" class="clue-image" />
+            <p class="clue-text">
+              Three toothbrushes in the holder.<br />
+              Left: 4 stripes · Middle: 1 stripe · Right: 7 stripes
+            </p>
+          </div>
+        {:else}
+          <p class="alert-text">
+            There are two toothbrushes in the holder. Looks like one is missing.
+          </p>
+        {/if}
+      </Alert>
+    {/if}
+
+    <!-- Medicine Cabinet → number lock or pill bottles clue -->
+    {#if showingMedicineCabinet}
+      <Alert onClose={() => (showingMedicineCabinet = false)}>
+        {#if medicineCabinetOpen}
+          <div class="clue-container">
+            <img src={placeholderImage} alt="Pill Bottles" class="clue-image" />
+            <p class="clue-text">
+              Prescription bottles with colored pills (L→R):<br />
+              Red · Blue · Yellow · Green · Purple · Orange
+            </p>
+          </div>
+        {:else}
+          <NumberLock digits={3} onEnter={handleMedicineCabinetCode} />
+        {/if}
+      </Alert>
+    {/if}
+
+    <!-- Spice Rack → always shows clue info -->
+    {#if showingSpiceRack}
+      <Alert onClose={() => (showingSpiceRack = false)}>
+        <div class="clue-container">
+          <img src={placeholderImage} alt="Spice Rack" class="clue-image" />
+          <p class="clue-text">
+            Paprika <span class="clue-color red">●</span> 3oz · Salt
+            <span class="clue-color blue">●</span> 9oz · Turmeric
+            <span class="clue-color yellow">●</span> 1oz<br />
+            Basil <span class="clue-color green">●</span> 5oz · Lavender
+            <span class="clue-color purple">●</span> 8oz · Cayenne
+            <span class="clue-color orange">●</span> 2oz
+          </p>
+        </div>
+      </Alert>
+    {/if}
+
+    <!-- Safe → number lock or channel hint -->
+    {#if showingSafe}
+      <Alert onClose={() => (showingSafe = false)}>
+        {#if safeOpen}
+          <div class="clue-container">
+            <img
+              src={placeholderImage}
+              alt="Safe Contents"
+              class="clue-image"
+            />
+            <p class="clue-text">
+              Inside the safe you find a small note that reads:<br />
+              <strong>"CH 73"</strong>
+            </p>
+          </div>
+        {:else}
+          <NumberLock digits={6} onEnter={handleSafeCode} />
+        {/if}
+      </Alert>
+    {/if}
+
+    <!-- Remote / TV → channel input or TV screen symbols -->
+    {#if showingRemote}
+      <Alert onClose={() => (showingRemote = false)}>
+        {#if tvCorrectChannel}
+          <div class="clue-container">
+            <img src={placeholderImage} alt="TV Screen" class="clue-image" />
+            <p class="clue-text">
+              The TV displays a repeating series of symbols:<br />
+              ☾→e · ☀→c · ◐→l · ☆→i · ◑→p · ●→s · ☾→e<br />
+              <em>Decode the symbols…</em>
+            </p>
+          </div>
+        {:else}
+          <p class="alert-text" style="margin-bottom: 12px;">
+            Enter the TV channel:
+          </p>
+          <NumberLock digits={2} onEnter={handleRemoteChannel} />
+        {/if}
+      </Alert>
+    {/if}
+
+    <!-- Entrance drawer → number lock, found key, or empty -->
+    {#if showingDrawer}
+      <Alert onClose={() => (showingDrawer = false)}>
+        {#if drawerKeyCollected}
+          <p class="alert-text">The drawer is empty.</p>
+        {:else if drawerUnlocked}
+          <div class="found-item-container">
+            <span class="found-item-emoji">🔑</span>
+            <p class="alert-text">You found a key!</p>
+            <button
+              class="collect-button"
+              onclick={() => {
+                collectKey();
+                showingDrawer = false;
+              }}
+            >
+              Take it
+            </button>
+          </div>
+        {:else}
+          <NumberLock digits={4} onEnter={handleDrawerCode} />
+        {/if}
+      </Alert>
+    {/if}
+
+    <!-- Kitchen drawer → symbol lock, found screwdriver, or empty -->
+    {#if showingKitchenDrawer}
+      <Alert onClose={() => (showingKitchenDrawer = false)}>
+        {#if screwdriverCollected}
+          <p class="alert-text">The drawer is empty.</p>
+        {:else if kitchenDrawerOpen}
+          <div class="found-item-container">
+            <span class="found-item-emoji">🪛</span>
+            <p class="alert-text">You found a screwdriver!</p>
+            <button
+              class="collect-button"
+              onclick={() => {
+                collectScrewdriver();
+                showingKitchenDrawer = false;
+              }}
+            >
+              Take it
+            </button>
+          </div>
+        {:else}
+          <!-- TODO: This should be a symbol lock -->
+          <PasswordLock onEnter={handleKitchenDrawerCode} />
+        {/if}
+      </Alert>
+    {/if}
+
+    <!-- Painting → use screwdriver, sliding puzzle, or hint -->
+    {#if showingPainting}
+      <Alert onClose={() => (showingPainting = false)}>
+        {#if paintingPried}
+          <SlidingPuzzle />
+        {:else if inventory.includes("screwdriver")}
+          <div class="found-item-container">
+            <span class="found-item-emoji">🪛</span>
+            <p class="alert-text">Use the screwdriver to pry off the frame?</p>
+            <button class="collect-button" onclick={useScrewdriverOnPainting}>
+              Use screwdriver
+            </button>
+          </div>
+        {:else}
+          <p class="alert-text">
+            A beautiful painting in an ornate frame. The frame looks like it
+            could be pried off with the right tool.
+          </p>
+        {/if}
+      </Alert>
+    {/if}
+
+    <!-- ═══════════════ FLAVOR TEXT HOTSPOTS ═══════════════ -->
+
+    {#if showingHallwayPainting}
+      <Alert onClose={() => (showingHallwayPainting = false)}>
+        <p class="alert-text">
+          An interesting painting of a countryside scene.
+        </p>
+      </Alert>
+    {/if}
+
+    {#if showingFlowerPot}
+      <Alert onClose={() => (showingFlowerPot = false)}>
+        <p class="alert-text">These are pretty flowers!</p>
+      </Alert>
+    {/if}
+
+    {#if showingBoots}
+      <Alert onClose={() => (showingBoots = false)}>
+        <p class="alert-text">
+          A pair of muddy boots. Doesn't look like anyone's been outside
+          recently.
+        </p>
+      </Alert>
+    {/if}
+
+    {#if showingKeyBowl}
+      <Alert onClose={() => (showingKeyBowl = false)}>
+        <p class="alert-text">
+          A bowl of keys, but none of them seem to fit the front door.
+        </p>
       </Alert>
     {/if}
   </div>
@@ -332,6 +706,94 @@
     font-weight: 600;
     text-align: center;
     padding: 8px 16px;
+  }
+
+  .found-item-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+  }
+
+  .found-item-emoji {
+    font-size: 3.5rem;
+    line-height: 1;
+  }
+
+  .collect-button {
+    margin-top: 4px;
+    padding: 10px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(180deg, #4a90e2 0%, #357abd 100%);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 4px 6px rgba(74, 144, 226, 0.3),
+      0 2px 4px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .collect-button:hover {
+    background: linear-gradient(180deg, #5ba0f2 0%, #4080cd 100%);
+    transform: translateY(-1px);
+    box-shadow:
+      0 6px 8px rgba(74, 144, 226, 0.4),
+      0 3px 6px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  .collect-button:active {
+    background: linear-gradient(180deg, #357abd 0%, #2a5f9d 100%);
+    transform: translateY(0);
+  }
+
+  .clue-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 500px;
+  }
+
+  .clue-image {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+  .clue-text {
+    font-size: 0.95rem;
+    text-align: center;
+    line-height: 1.6;
+    color: #333;
+  }
+
+  .clue-color {
+    font-size: 0.85rem;
+  }
+  .clue-color.red {
+    color: #e53e3e;
+  }
+  .clue-color.blue {
+    color: #3182ce;
+  }
+  .clue-color.yellow {
+    color: #d69e2e;
+  }
+  .clue-color.green {
+    color: #38a169;
+  }
+  .clue-color.purple {
+    color: #805ad5;
+  }
+  .clue-color.orange {
+    color: #dd6b20;
   }
 
   .escaped-overlay {

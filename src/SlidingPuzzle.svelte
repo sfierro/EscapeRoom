@@ -1,6 +1,8 @@
 <script>
     import paintingUrl from "./assets/painting.png";
 
+    const { onSolved: onSolvedCallback } = $props();
+
     // ─── Configurable ──────────────────────────────────────────
     let cols = 3;
     let rows = 3;
@@ -98,6 +100,9 @@
         if (isAdjacent(pos, emptyPos)) {
             tiles[pos] = null;
             tiles[emptyPos] = tileNum;
+            if (checkSolved(tiles) && onSolvedCallback) {
+                onSolvedCallback();
+            }
         }
     }
 </script>
