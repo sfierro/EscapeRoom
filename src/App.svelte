@@ -284,6 +284,14 @@
             </div>
           {/each}
         </div>
+        <div class="action-buttons">
+          <button class="action-btn" onclick={() => {}}>💡 Hint</button>
+          <button class="action-btn" onclick={() => {}}>🔄 Restart Game</button>
+          <button class="action-btn" onclick={() => {}}>💾 Save Game</button>
+          <button class="action-btn exit-btn" onclick={() => {}}
+            >🚪 Exit Game</button
+          >
+        </div>
       </div>
     </div>
 
@@ -715,6 +723,48 @@
   .inventory-item {
     font-size: 28px;
     line-height: 1;
+  }
+
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+    flex-shrink: 0;
+  }
+
+  .action-btn {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+  }
+
+  .action-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+
+  .action-btn:active {
+    background: rgba(255, 255, 255, 0.08);
+    transform: scale(0.97);
+  }
+
+  .action-btn.exit-btn {
+    background: rgba(220, 50, 50, 0.25);
+    border-color: rgba(220, 50, 50, 0.5);
+  }
+
+  .action-btn.exit-btn:hover {
+    background: rgba(220, 50, 50, 0.4);
+    border-color: rgba(220, 50, 50, 0.7);
   }
 
   .books-image {
