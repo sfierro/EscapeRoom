@@ -1,5 +1,5 @@
 <script>
-    import paintingUrl from "./assets/painting.png";
+    import paintingUrl from "./assets/clues/painting.png";
 
     const { onSolved: onSolvedCallback } = $props();
 

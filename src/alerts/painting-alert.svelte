@@ -1,0 +1,36 @@
+<script>
+  import {
+    gameState,
+    closeAlert,
+    removeFromInventory,
+    hasItem,
+  } from "../game-state.svelte";
+  import TextAlert from "./ui/TextAlert.svelte";
+  import ActionButtonAlert from "./ui/ActionButtonAlert.svelte";
+  import Alert from "../Alert.svelte";
+  import SlidingPuzzle from "../SlidingPuzzle.svelte";
+
+  function useScrewdriver() {
+    removeFromInventory("screwdriver");
+    gameState.paintingPried = true;
+  }
+</script>
+
+{#if gameState.paintingPried}
+  <Alert onClose={closeAlert}>
+    <SlidingPuzzle />
+  </Alert>
+{:else if hasItem("screwdriver")}
+  <ActionButtonAlert
+    emoji="🪛"
+    text="The frame of this painting looks like it could be pried off with the right tool."
+    buttonText="Use screwdriver"
+    onAction={useScrewdriver}
+    onClose={closeAlert}
+  />
+{:else}
+  <TextAlert
+    text="The frame of this painting looks like it could be pried off with the right tool."
+    onClose={closeAlert}
+  />
+{/if}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { margin: 20px; font-family: monospace; background: #1a1a2e; color: #eee; }
+  #container { position: relative; display: inline-block; }
+  img { display: block; }
+  #coords { position: fixed; top: 10px; right: 10px; background: #16213e; padding: 15px; border-radius: 8px; min-width: 300px; }
+  #log { max-height: 80vh; overflow-y: auto; font-size: 13px; }
+  .dot { position: absolute; width: 6px; height: 6px; background: red; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+  .entry { padding: 2px 0; border-bottom: 1px solid #333; }
+  button { background: #e94560; color: white; border: none; padding: 8px 16px; cursor: pointer; border-radius: 4px; margin: 5px; }
+  h3 { color: #e94560; margin: 0 0 10px; }
+  #crosshair { position: absolute; pointer-events: none; }
+  #crosshairH, #crosshairV { position: absolute; background: rgba(233,69,96,0.5); pointer-events: none; }
+  #crosshairH { height: 1px; width: 100%; left: 0; }
+  #crosshairV { width: 1px; height: 100%; top: 0; }
+  #liveCoord { position: absolute; background: rgba(0,0,0,0.8); color: #e94560; padding: 2px 6px; font-size: 12px; pointer-events: none; border-radius: 3px; }
+</style>
+</head>
+<body>
+<h2>Remote Button Coordinate Picker (595 x 582)</h2>
+<p>Click on each button to record its center coordinates. Coordinates are shown as percentages (for responsive overlays).</p>
+<div style="display:flex; gap: 20px;">
+  <div id="container">
+    <img id="img" src="src/assets/clues/remote.png" />
+    <div id="crosshairH"></div>
+    <div id="crosshairV"></div>
+    <div id="liveCoord"></div>
+  </div>
+  <div id="coords">
+    <h3>Clicked Coordinates</h3>
+    <button onclick="clearLog()">Clear</button>
+    <button onclick="copyLog()">Copy All</button>
+    <div id="log"></div>
+  </div>
+</div>
+<script>
+const img = document.getElementById('img');
+const container = document.getElementById('container');
+const log = document.getElementById('log');
+const crosshairH = document.getElementById('crosshairH');
+const crosshairV = document.getElementById('crosshairV');
+const liveCoord = document.getElementById('liveCoord');
+let clicks = [];
+
+container.addEventListener('mousemove', (e) => {
+  const rect = img.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  crosshairH.style.top = y + 'px';
+  crosshairV.style.left = x + 'px';
+  const pctX = ((x / rect.width) * 100).toFixed(1);
+  const pctY = ((y / rect.height) * 100).toFixed(1);
+  liveCoord.style.left = (x + 12) + 'px';
+  liveCoord.style.top = (y - 20) + 'px';
+  liveCoord.textContent = `${Math.round(x)},${Math.round(y)} (${pctX}%, ${pctY}%)`;
+});
+
+container.addEventListener('click', (e) => {
+  const rect = img.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const pctX = ((x / rect.width) * 100).toFixed(1);
+  const pctY = ((y / rect.height) * 100).toFixed(1);
+
+  const dot = document.createElement('div');
+  dot.className = 'dot';
+  dot.style.left = x + 'px';
+  dot.style.top = y + 'px';
+  container.appendChild(dot);
+
+  const label = prompt('Button name?') || `point_${clicks.length}`;
+  const entry = { label, px: { x: Math.round(x), y: Math.round(y) }, pct: { x: pctX, y: pctY } };
+  clicks.push(entry);
+
+  const div = document.createElement('div');
+  div.className = 'entry';
+  div.textContent = `${label}: px(${entry.px.x}, ${entry.px.y}) pct(${entry.pct.x}%, ${entry.pct.y}%)`;
+  log.appendChild(div);
+});
+
+function clearLog() { clicks = []; log.innerHTML = ''; container.querySelectorAll('.dot').forEach(d => d.remove()); }
+function copyLog() {
+  const text = clicks.map(c => `${c.label}: { left: "${c.pct.x}%", top: "${c.pct.y}%" } // px(${c.px.x}, ${c.px.y})`).join('\n');
+  navigator.clipboard.writeText(text);
+  alert('Copied!');
+}
+</script>
+</body>
+</html>

@@ -2,8 +2,10 @@
   "name": "escape-room",
   "version": "1.0.0",
   "type": "module",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite",
+    "electron": "electron .",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -11,6 +13,7 @@
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.14",
+    "electron": "^33.0.0",
     "postcss": "^8.4.47",
     "prettier": "^3.8.1",
     "prettier-plugin-svelte": "^3.4.1",
