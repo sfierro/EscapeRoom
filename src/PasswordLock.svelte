@@ -1,5 +1,5 @@
 <script>
-    const { onEnter } = $props();
+    const { onEnter, onSuccess } = $props();
 
     let value = $state("");
     let disabled = $state(false);
@@ -12,6 +12,9 @@
         if (isCorrect) {
             correct = true;
             disabled = true;
+            setTimeout(() => {
+                if (onSuccess) onSuccess();
+            }, 1000);
         } else {
             incorrect = true;
             setTimeout(() => {

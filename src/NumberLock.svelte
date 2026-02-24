@@ -2,7 +2,7 @@
     import NumberLockOpenIcon from "./icons/number-lock-open-icon.svelte";
     import NumberLockClosedIcon from "./icons/number-lock-closed-icon.svelte";
 
-    const { digits = 4, onEnter } = $props();
+    const { digits = 4, onEnter, onSuccess } = $props();
 
     let values = $state([]);
     let disabled = $state(false);
@@ -34,6 +34,9 @@
         const isCorrect = onEnter(getValue());
         if (isCorrect) {
             disabled = true;
+            setTimeout(() => {
+                if (onSuccess) onSuccess();
+            }, 1000);
         } else {
             incorrect = true;
             setTimeout(() => {

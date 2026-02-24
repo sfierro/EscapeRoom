@@ -10,6 +10,9 @@
   import outsideImage from "./assets/outside.jpg";
   import booksImage from "./assets/books.png";
   import placeholderImage from "./assets/placeholder.jpg";
+  import toothbrush_2_image from "./assets/toothbrush_2.png";
+  import toothbrush_3_image from "./assets/toothbrush_3.png";
+  import maze_image from "./assets/maze.png";
 
   let currentRoomId = $state("single_bedroom");
   let showingOutside = $state(false);
@@ -19,6 +22,7 @@
   let showingComputer = $state(false);
   let showingBooks = $state(false);
   let showingCanister = $state(false);
+  let toothbrushCollected = $state(false);
   let showingToothbrushHolder = $state(false);
   let showingMedicineCabinet = $state(false);
   let showingSpiceRack = $state(false);
@@ -99,11 +103,8 @@
     }
     // Bathroom
     else if (id === "toothbrush_holder") {
-      if (inventory.includes("toothbrush") && !toothbrushPlaced) {
-        inventory.splice(inventory.indexOf("toothbrush"), 1);
-        toothbrushPlaced = true;
-      }
       showingToothbrushHolder = true;
+      inventory.push("toothbrush");
     } else if (id === "medicine_cabinet") {
       showingMedicineCabinet = true;
     }
@@ -139,59 +140,32 @@
 
   // ─── Computer password handler ────────────────────────────
   function handleComputerPassword(value) {
-    if (value === "blackcat") {
-      computerSolved = true;
-      return true;
-    }
-    return false;
+    return value === "BLACKCAT";
   }
 
   // ─── Canister directional lock handler ────────────────────
   function handleCanisterCode(value) {
-    if (value === "URDL") {
-      canisterOpen = true;
-      if (!inventory.includes("toothbrush")) {
-        inventory.push("toothbrush");
-      }
-      return true;
-    }
-    return false;
+    return value === "RULDL";
   }
 
   // ─── Medicine cabinet number lock handler ─────────────────
   function handleMedicineCabinetCode(value) {
-    if (value === "417") {
-      medicineCabinetOpen = true;
-      return true;
-    }
-    return false;
+    return value === "232";
   }
 
   // ─── Safe number lock handler ─────────────────────────────
   function handleSafeCode(value) {
-    if (value === "391582") {
-      safeOpen = true;
-      return true;
-    }
-    return false;
+    return value === "391582";
   }
 
   // ─── Remote / TV channel handler ──────────────────────────
   function handleRemoteChannel(value) {
-    if (value === "73") {
-      tvCorrectChannel = true;
-      return true;
-    }
-    return false;
+    return value === "73";
   }
 
   // ─── Kitchen drawer (symbol lock) handler ──────────────────
   function handleKitchenDrawerCode(value) {
-    if (value === "placeholder") {
-      kitchenDrawerOpen = true;
-      return true;
-    }
-    return false;
+    return value === "placeholder";
   }
 
   function collectScrewdriver() {
@@ -205,11 +179,7 @@
 
   // ─── Entrance drawer number lock handler ───────────────────
   function handleDrawerCode(value) {
-    if (value === "2817") {
-      drawerUnlocked = true;
-      return true;
-    }
-    return false;
+    return value === "2817";
   }
 
   function collectKey() {
@@ -340,15 +310,12 @@
     {#if showingComputer}
       <Alert onClose={() => (showingComputer = false)}>
         {#if computerSolved}
-          <div class="clue-container">
-            <img src={placeholderImage} alt="Maze" class="clue-image" />
-            <p class="clue-text">
-              The screen shows a cat navigating a maze.<br />
-              The cat's path: ↑ → ↓ ←
-            </p>
-          </div>
+          <img src={maze_image} alt="Maze" class="maze-clue-image" />
         {:else}
-          <PasswordLock onEnter={handleComputerPassword} />
+          <PasswordLock
+            onEnter={handleComputerPassword}
+            onSuccess={() => (computerSolved = true)}
+          />
         {/if}
       </Alert>
     {/if}
@@ -363,10 +330,28 @@
     <!-- Canister → directional lock or empty -->
     {#if showingCanister}
       <Alert onClose={() => (showingCanister = false)}>
-        {#if canisterOpen}
+        {#if toothbrushCollected}
           <p class="alert-text">The canister is empty.</p>
+        {:else if canisterOpen}
+          <div class="clue-container">
+            <p style="font-size: 3rem;">🪥</p>
+            <p class="alert-text">Inside the canister you find a toothbrush.</p>
+            <button
+              class="collect-button"
+              onclick={() => {
+                inventory.push("toothbrush");
+                toothbrushCollected = true;
+                showingCanister = false;
+              }}
+            >
+              Take toothbrush
+            </button>
+          </div>
         {:else}
-          <DirectionalLock length={4} onEnter={handleCanisterCode} />
+          <DirectionalLock
+            onEnter={handleCanisterCode}
+            onSuccess={() => (canisterOpen = true)}
+          />
         {/if}
       </Alert>
     {/if}
@@ -376,16 +361,35 @@
       <Alert onClose={() => (showingToothbrushHolder = false)}>
         {#if toothbrushPlaced}
           <div class="clue-container">
-            <img src={placeholderImage} alt="Toothbrushes" class="clue-image" />
-            <p class="clue-text">
-              Three toothbrushes in the holder.<br />
-              Left: 4 stripes · Middle: 1 stripe · Right: 7 stripes
-            </p>
+            <img
+              src={toothbrush_3_image}
+              alt="Toothbrushes"
+              class="toothbrush-clue-image"
+            />
           </div>
         {:else}
-          <p class="alert-text">
-            There are two toothbrushes in the holder. Looks like one is missing.
-          </p>
+          <div class="clue-container">
+            <img
+              src={toothbrush_2_image}
+              alt="Toothbrushes"
+              class="toothbrush-clue-image"
+            />
+            {#if inventory.includes("toothbrush")}
+              <button
+                class="collect-button"
+                onclick={() => {
+                  inventory.splice(inventory.indexOf("toothbrush"), 1);
+                  toothbrushPlaced = true;
+                }}
+              >
+                Place toothbrush
+              </button>
+            {:else}
+              <p class="alert-text">
+                There are two toothbrushes in the holder.
+              </p>
+            {/if}
+          </div>
         {/if}
       </Alert>
     {/if}
@@ -402,7 +406,11 @@
             </p>
           </div>
         {:else}
-          <NumberLock digits={3} onEnter={handleMedicineCabinetCode} />
+          <NumberLock
+            digits={3}
+            onEnter={handleMedicineCabinetCode}
+            onSuccess={() => (medicineCabinetOpen = true)}
+          />
         {/if}
       </Alert>
     {/if}
@@ -440,7 +448,11 @@
             </p>
           </div>
         {:else}
-          <NumberLock digits={6} onEnter={handleSafeCode} />
+          <NumberLock
+            digits={6}
+            onEnter={handleSafeCode}
+            onSuccess={() => (safeOpen = true)}
+          />
         {/if}
       </Alert>
     {/if}
@@ -461,7 +473,11 @@
           <p class="alert-text" style="margin-bottom: 12px;">
             Enter the TV channel:
           </p>
-          <NumberLock digits={2} onEnter={handleRemoteChannel} />
+          <NumberLock
+            digits={2}
+            onEnter={handleRemoteChannel}
+            onSuccess={() => (tvCorrectChannel = true)}
+          />
         {/if}
       </Alert>
     {/if}
@@ -482,11 +498,15 @@
                 showingDrawer = false;
               }}
             >
-              Take it
+              Take key
             </button>
           </div>
         {:else}
-          <NumberLock digits={4} onEnter={handleDrawerCode} />
+          <NumberLock
+            digits={4}
+            onEnter={handleDrawerCode}
+            onSuccess={() => (drawerUnlocked = true)}
+          />
         {/if}
       </Alert>
     {/if}
@@ -512,7 +532,10 @@
           </div>
         {:else}
           <!-- TODO: This should be a symbol lock -->
-          <PasswordLock onEnter={handleKitchenDrawerCode} />
+          <PasswordLock
+            onEnter={handleKitchenDrawerCode}
+            onSuccess={() => (kitchenDrawerOpen = true)}
+          />
         {/if}
       </Alert>
     {/if}
@@ -763,6 +786,20 @@
   .clue-image {
     max-width: 100%;
     max-height: 300px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+  .maze-clue-image {
+    max-width: 100%;
+    max-height: 600px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+  .toothbrush-clue-image {
+    width: 100%;
+    max-height: 900px;
     object-fit: contain;
     border-radius: 8px;
   }

@@ -1,23 +1,21 @@
 <script>
-    import NumberLockOpenIcon from "./icons/number-lock-open-icon.svelte";
-    import NumberLockClosedIcon from "./icons/number-lock-closed-icon.svelte";
+    import CircleLockOpenIcon from "./icons/circle-lock-open-icon.svelte";
+    import CircleLockClosedIcon from "./icons/circle-lock-closed-icon.svelte";
 
-    const { length = 4, onEnter } = $props();
+    const { onEnter, onSuccess } = $props();
+
+    const MAX_LENGTH = 10;
 
     let sequence = $state([]);
     let disabled = $state(false);
     let incorrect = $state(false);
 
-    const dirSymbols = { U: "↑", D: "↓", L: "←", R: "→" };
-
     function addDirection(dir) {
-        if (disabled || incorrect || sequence.length >= length) return;
+        if (disabled || incorrect || sequence.length >= MAX_LENGTH) return;
         sequence = [...sequence, dir];
-    }
-
-    function removeLastDirection() {
-        if (disabled || incorrect || sequence.length === 0) return;
-        sequence = sequence.slice(0, -1);
+        if (sequence.length === MAX_LENGTH) {
+            handleSubmit();
+        }
     }
 
     function clearSequence() {
@@ -25,12 +23,14 @@
         sequence = [];
     }
 
-    function handleEnter() {
-        if (disabled || incorrect || !onEnter || sequence.length !== length)
-            return;
+    function handleSubmit() {
+        if (disabled || incorrect || !onEnter || sequence.length === 0) return;
         const isCorrect = onEnter(sequence.join(""));
         if (isCorrect) {
             disabled = true;
+            setTimeout(() => {
+                if (onSuccess) onSuccess();
+            }, 250);
         } else {
             incorrect = true;
             setTimeout(() => {
@@ -42,93 +42,115 @@
 </script>
 
 <div class="directional-lock" class:disabled>
-    <div class="sequence-display">
-        {#each Array(length) as _, i}
-            <div class="sequence-slot" class:filled={i < sequence.length}>
-                {#if i < sequence.length}
-                    <span class="direction-symbol"
-                        >{dirSymbols[sequence[i]]}</span
-                    >
-                {:else}
-                    <span class="direction-placeholder">·</span>
-                {/if}
-            </div>
-        {/each}
-    </div>
-
-    <div class="direction-pad">
-        <div class="pad-row pad-top">
+    <div class="dpad">
+        <div class="dpad-row">
             <button
                 class="dir-button"
                 onclick={() => addDirection("U")}
-                disabled={disabled || incorrect || sequence.length >= length}
+                disabled={disabled ||
+                    incorrect ||
+                    sequence.length >= MAX_LENGTH}
                 aria-label="Up"
             >
-                ↑
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
             </button>
         </div>
-        <div class="pad-row pad-middle">
+        <div class="dpad-row dpad-middle">
             <button
                 class="dir-button"
                 onclick={() => addDirection("L")}
-                disabled={disabled || incorrect || sequence.length >= length}
+                disabled={disabled ||
+                    incorrect ||
+                    sequence.length >= MAX_LENGTH}
                 aria-label="Left"
             >
-                ←
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
             </button>
             <button
-                class="dir-button"
-                onclick={() => addDirection("D")}
-                disabled={disabled || incorrect || sequence.length >= length}
-                aria-label="Down"
+                class="lock-button"
+                class:unlocked={disabled}
+                class:incorrect
+                onclick={handleSubmit}
+                disabled={disabled || incorrect || sequence.length === 0}
+                aria-label="Unlock"
             >
-                ↓
+                <div class="lock-icon-wrapper">
+                    {#if disabled}
+                        <CircleLockOpenIcon />
+                    {:else}
+                        <CircleLockClosedIcon />
+                    {/if}
+                </div>
             </button>
             <button
                 class="dir-button"
                 onclick={() => addDirection("R")}
-                disabled={disabled || incorrect || sequence.length >= length}
+                disabled={disabled ||
+                    incorrect ||
+                    sequence.length >= MAX_LENGTH}
                 aria-label="Right"
             >
-                →
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+        <div class="dpad-row">
+            <button
+                class="dir-button"
+                onclick={() => addDirection("D")}
+                disabled={disabled ||
+                    incorrect ||
+                    sequence.length >= MAX_LENGTH}
+                aria-label="Down"
+            >
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
             </button>
         </div>
     </div>
 
-    <div class="controls-row">
-        <button
-            class="control-button"
-            onclick={clearSequence}
-            disabled={disabled || incorrect || sequence.length === 0}
-            aria-label="Clear"
-        >
-            Clear
-        </button>
-        <button
-            class="lock-button"
-            class:unlocked={disabled}
-            class:incorrect
-            onclick={handleEnter}
-            disabled={disabled || incorrect || sequence.length !== length}
-            aria-label="Unlock"
-        >
-            <div class="lock-icon-wrapper">
-                {#if disabled}
-                    <NumberLockOpenIcon />
-                {:else}
-                    <NumberLockClosedIcon />
-                {/if}
-            </div>
-        </button>
-        <button
-            class="control-button"
-            onclick={removeLastDirection}
-            disabled={disabled || incorrect || sequence.length === 0}
-            aria-label="Undo"
-        >
-            Undo
-        </button>
-    </div>
+    <button
+        class="control-button"
+        onclick={clearSequence}
+        disabled={disabled || incorrect || sequence.length === 0}
+        aria-label="Clear"
+    >
+        Clear
+    </button>
 </div>
 
 <style>
@@ -152,64 +174,27 @@
         pointer-events: none;
     }
 
-    .sequence-display {
-        display: flex;
-        gap: 10px;
-    }
-
-    .sequence-slot {
-        width: 48px;
-        height: 56px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
-        border: 2px solid rgba(0, 0, 0, 0.08);
-        border-radius: 10px;
-        box-shadow:
-            0 4px 8px rgba(0, 0, 0, 0.1),
-            0 2px 4px rgba(0, 0, 0, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.9);
-        transition: all 0.2s ease;
-    }
-
-    .sequence-slot.filled {
-        border-color: rgba(74, 144, 226, 0.3);
-        box-shadow:
-            0 4px 8px rgba(0, 0, 0, 0.1),
-            0 2px 4px rgba(0, 0, 0, 0.06),
-            0 0 0 1px rgba(74, 144, 226, 0.15),
-            inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    }
-
-    .direction-symbol {
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: #2c3e50;
-    }
-
-    .direction-placeholder {
-        font-size: 1.6rem;
-        color: #ccc;
-    }
-
-    .direction-pad {
+    .dpad {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 6px;
     }
 
-    .pad-row {
+    .dpad-row {
+        display: flex;
+        justify-content: center;
+    }
+
+    .dpad-middle {
         display: flex;
         gap: 6px;
+        align-items: center;
     }
 
     .dir-button {
         width: 56px;
         height: 56px;
-        font-size: 1.5rem;
-        font-weight: 700;
         color: #2c3e50;
         background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
         border: 1px solid rgba(0, 0, 0, 0.1);
@@ -224,6 +209,12 @@
             0 1px 2px rgba(0, 0, 0, 0.06),
             inset 0 1px 0 rgba(255, 255, 255, 0.8);
         user-select: none;
+        padding: 12px;
+    }
+
+    .dir-button svg {
+        width: 100%;
+        height: 100%;
     }
 
     .dir-button:hover:not(:disabled) {
@@ -250,45 +241,6 @@
     }
 
     .dir-button:focus:not(:focus-visible) {
-        outline: none;
-    }
-
-    .controls-row {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-    }
-
-    .control-button {
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #555;
-        background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        cursor: pointer;
-        padding: 8px 16px;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow:
-            0 2px 4px rgba(0, 0, 0, 0.1),
-            0 1px 2px rgba(0, 0, 0, 0.06);
-    }
-
-    .control-button:hover:not(:disabled) {
-        background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
-        transform: translateY(-1px);
-    }
-
-    .control-button:active:not(:disabled) {
-        transform: translateY(0);
-    }
-
-    .control-button:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-    }
-
-    .control-button:focus:not(:focus-visible) {
         outline: none;
     }
 
@@ -334,6 +286,10 @@
         pointer-events: none;
     }
 
+    .lock-button:focus:not(:focus-visible) {
+        outline: none;
+    }
+
     .lock-button.unlocked {
         background: linear-gradient(180deg, #10b981 0%, #059669 100%);
         box-shadow:
@@ -350,10 +306,6 @@
             inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 
-    .lock-button:focus:not(:focus-visible) {
-        outline: none;
-    }
-
     .lock-icon-wrapper {
         width: 50px;
         height: 50px;
@@ -364,5 +316,38 @@
         z-index: 1;
         color: #ffffff;
         filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+    }
+
+    .control-button {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #555;
+        background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        cursor: pointer;
+        padding: 8px 16px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow:
+            0 2px 4px rgba(0, 0, 0, 0.1),
+            0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+
+    .control-button:hover:not(:disabled) {
+        background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+        transform: translateY(-1px);
+    }
+
+    .control-button:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    .control-button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+    .control-button:focus:not(:focus-visible) {
+        outline: none;
     }
 </style>
