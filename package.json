@@ -7,13 +7,29 @@
     "dev": "vite",
     "electron": "electron .",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dist": "vite build && electron-builder"
+  },
+  "build": {
+    "appId": "com.escaperoom.app",
+    "productName": "Escape Room",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "win": {
+      "target": "nsis"
+    }
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.14",
     "electron": "^33.0.0",
+    "electron-builder": "^26.8.1",
     "postcss": "^8.4.47",
     "prettier": "^3.8.1",
     "prettier-plugin-svelte": "^3.4.1",
