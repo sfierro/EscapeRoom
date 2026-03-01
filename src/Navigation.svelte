@@ -84,6 +84,7 @@
         pointer-events: auto;
         color: white;
         transition: all 0.2s ease;
+        animation: navArrowIn 0.5s ease-out;
     }
 
     .nav-button:hover {
@@ -103,5 +104,16 @@
     .nav-button svg {
         width: 32px;
         height: 32px;
+    }
+
+    @keyframes navArrowIn {
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
 </style>

@@ -15,10 +15,29 @@
 
   let activeText = $state(null);
 
+  // ─── Next-room gates (unlock conditions for forward progression) ─
+  const nextRoomGates = {
+    'single_bedroom->hallway': () => gameState.toothbrushCollected,
+    'bathroom->hallway': () => gameState.toothbrushCollected,
+    'hallway->kitchen': () => gameState.medicineCabinetOpen,
+    'kitchen->lounge': () => gameState.kitchenDrawerOpen,
+    'lounge->entrance': () => gameState.screwdriverCollected,
+  };
+
+  function isNextRoomUnlocked(roomId, nextRoomId) {
+    if (!nextRoomId) return false;
+    const key = `${roomId}->${nextRoomId}`;
+    const gate = nextRoomGates[key];
+    return !gate || gate();
+  }
+
   // ─── Derived state ───────────────────────────────────────────
   const currentRoom = $derived(roomsById.get(gameState.currentRoomId));
-  const hasPreviousRoom = $derived(!!currentRoom.previousRoomId);
-  const hasNextRoom = $derived(!!currentRoom.nextRoomId);
+  const hasPreviousRoom = $derived(!!currentRoom?.previousRoomId);
+  const hasNextRoom = $derived(
+    !!currentRoom?.nextRoomId &&
+      isNextRoomUnlocked(gameState.currentRoomId, currentRoom.nextRoomId),
+  );
 
   const displayImage = $derived(
     gameState.showingOutside ? outsideImage : currentRoom.image,

@@ -16,7 +16,7 @@
   }
 </script>
 
-{#if !gameState.paintingPried}
+{#if gameState.paintingPried}
   <Alert onClose={closeAlert}>
   <div class="flex flex-col items-center justify-center gap-8">
     <SlidingPuzzle />

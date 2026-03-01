@@ -108,7 +108,7 @@ export const rooms: Room[] = [
             { text: 'These are pretty flowers!', cx: 1333, cy: 381 },
             { text: 'A pair of muddy boots.', cx: 1098, cy: 834 },
             { text: 'A bowl of keys, but none of them seem to fit the front door.', cx: 1391, cy: 595 },
-            { text: 'Nothing under the mat.', cx: 869, cy: 813 },
+            { text: 'Nothing under the mat.', cx: 869, cy: 870 },
         ],
         previousRoomId: 'lounge',
     },
