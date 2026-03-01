@@ -4,12 +4,14 @@
         closeAlert,
         removeFromInventory,
         hasItem,
+        freezeTimer,
     } from "../game-state.svelte";
     import TextAlert from "./ui/TextAlert.svelte";
     import ActionButtonAlert from "./ui/ActionButtonAlert.svelte";
 
     function useKeyOnDoor() {
         removeFromInventory("key");
+        freezeTimer();
         gameState.showingOutside = true;
         closeAlert();
     }

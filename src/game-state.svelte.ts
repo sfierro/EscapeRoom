@@ -15,6 +15,7 @@ export interface GameStateSerialized {
     drawerUnlocked: boolean;
     drawerKeyCollected: boolean;
     paintingPried: boolean;
+    elapsedMs: number;
 }
 
 // ─── Default / initial values ───────────────────────────────────
@@ -34,6 +35,7 @@ const DEFAULTS: GameStateSerialized = {
     drawerUnlocked: false,
     drawerKeyCollected: false,
     paintingPried: false,
+    elapsedMs: 0,
 };
 
 // ─── Reactive singleton ─────────────────────────────────────────
@@ -42,6 +44,9 @@ const DEFAULTS: GameStateSerialized = {
 export const gameState = $state({
     ...DEFAULTS,
     activeHotspotId: null as string | null,
+    slidingPuzzleTiles: null as (number | null)[] | null,
+    timerStartedAt: Date.now(),
+    escapeTotalMs: null as number | null,
 });
 
 // ─── Serialization helpers ──────────────────────────────────────
@@ -62,6 +67,7 @@ export function toJSON(): GameStateSerialized {
         drawerUnlocked: gameState.drawerUnlocked,
         drawerKeyCollected: gameState.drawerKeyCollected,
         paintingPried: gameState.paintingPried,
+        elapsedMs: getCurrentElapsedMs(),
     };
 }
 
@@ -82,7 +88,11 @@ export function fromJSON(data: GameStateSerialized): void {
     gameState.drawerUnlocked = data.drawerUnlocked;
     gameState.drawerKeyCollected = data.drawerKeyCollected;
     gameState.paintingPried = data.paintingPried;
+    gameState.elapsedMs = data.elapsedMs ?? 0;
     gameState.activeHotspotId = null;
+    gameState.slidingPuzzleTiles = null;
+    gameState.timerStartedAt = Date.now();
+    gameState.escapeTotalMs = null;
 }
 
 export function resetGame(): void {
@@ -92,6 +102,8 @@ export function resetGame(): void {
 // ─── Electron IPC wrappers ──────────────────────────────────────
 export async function saveGame(): Promise<void> {
     if (!window.api) return;
+    gameState.elapsedMs = getCurrentElapsedMs();
+    gameState.timerStartedAt = Date.now();
     await window.api.saveGame(toJSON());
 }
 
@@ -119,6 +131,26 @@ export function removeFromInventory(item: string): void {
 
 export function hasItem(item: string): boolean {
     return gameState.inventory.includes(item);
+}
+
+// ─── Timer helpers ──────────────────────────────────────────────
+export function getCurrentElapsedMs(): number {
+    return gameState.elapsedMs + (Date.now() - gameState.timerStartedAt);
+}
+
+export function freezeTimer(): void {
+    gameState.escapeTotalMs = getCurrentElapsedMs();
+}
+
+export function formatElapsedTime(ms: number): string {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    if (hours > 0) {
+        return `${hours}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
+    }
+    return `${minutes}m ${seconds.toString().padStart(2, '0')}s`;
 }
 
 // ─── Close the active alert ────────────────────────────────────

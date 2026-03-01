@@ -5,6 +5,7 @@
     saveGame,
     loadGame,
     resetGame,
+    formatElapsedTime,
   } from "./game-state.svelte";
   import { alertRegistry } from "./alert-registry";
   import Hotspot from "./Hotspot.svelte";
@@ -134,6 +135,9 @@
         {#if gameState.showingOutside}
           <div class="escaped-overlay">
             <h1 class="escaped-text">You Escaped!</h1>
+            {#if gameState.escapeTotalMs != null}
+              <p class="escaped-time">You escaped in {formatElapsedTime(gameState.escapeTotalMs)}</p>
+            {/if}
           </div>
         {/if}
       </div>
@@ -343,6 +347,7 @@
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     pointer-events: none;
@@ -358,6 +363,17 @@
       0 0 40px rgba(255, 215, 0, 0.3),
       2px 2px 4px rgba(0, 0, 0, 0.7);
     animation: escapePulse 2s ease-in-out infinite;
+  }
+
+  .escaped-time {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 0.5rem;
+    text-shadow:
+      0 0 12px rgba(255, 255, 255, 0.4),
+      2px 2px 4px rgba(0, 0, 0, 0.7);
+    letter-spacing: 0.05em;
   }
 
   @keyframes escapePulse {

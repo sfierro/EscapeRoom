@@ -1,5 +1,6 @@
 <script>
     import paintingUrl from "./assets/clues/sliding-puzzle-painting.png";
+    import { gameState } from "./game-state.svelte";
 
     const { onSolved: onSolvedCallback } = $props();
 
@@ -81,7 +82,11 @@
     }
 
     // ─── Reactive state ────────────────────────────────────────
-    let tiles = $state(shuffle());
+    // Restore from in-memory game state if available, otherwise shuffle fresh.
+    if (!gameState.slidingPuzzleTiles) {
+        gameState.slidingPuzzleTiles = shuffle();
+    }
+    let tiles = $derived(gameState.slidingPuzzleTiles);
     let solved = $derived(checkSolved(tiles));
 
     // ─── Interaction ───────────────────────────────────────────
@@ -159,8 +164,7 @@
         position: relative;
         overflow: hidden;
         user-select: none;
-        border: 1.5px solid rgba(0, 0, 0, 0.35);
-        border-radius: 4px;
+        border: 1.5px solid black;
     }
 
     .tile {

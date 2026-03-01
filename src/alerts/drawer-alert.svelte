@@ -29,7 +29,7 @@
 {:else}
     <Alert onClose={closeAlert}>
         <NumberLock
-            digits={4}
+            digits={5}
             onEnter={(value) => value === "25134"}
             onSuccess={() => (gameState.drawerUnlocked = true)}
         />
