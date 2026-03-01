@@ -16,10 +16,17 @@
   }
 </script>
 
-{#if gameState.paintingPried}
+{#if !gameState.paintingPried}
   <Alert onClose={closeAlert}>
+  <div class="flex flex-col items-center justify-center gap-8">
     <SlidingPuzzle />
+    <p class="alert-text">
+      Behind the painting, hidden inside the frame, is a sliding puzzle.<br/>
+      It looks like an altered replica of the original.
+      </p>
+    </div>
   </Alert>
+
 {:else if hasItem("screwdriver")}
   <ActionButtonAlert
     emoji="🪛"

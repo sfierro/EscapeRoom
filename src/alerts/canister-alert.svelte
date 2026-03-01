@@ -28,9 +28,12 @@
     />
 {:else}
     <Alert onClose={closeAlert}>
-        <DirectionalLock
-            onEnter={(value) => value === "RULDL"}
-            onSuccess={() => (gameState.canisterOpen = true)}
-        />
+        <div class="flex flex-col items-center justify-center">
+            <DirectionalLock
+                onEnter={(value) => value === "RULDL"}
+                onSuccess={() => (gameState.canisterOpen = true)}
+            />
+            <p class="alert-text">This canister is sealed with a directional lock.</p>
+        </div>
     </Alert>
 {/if}

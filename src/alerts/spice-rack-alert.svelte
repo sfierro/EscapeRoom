@@ -1,7 +1,9 @@
 <script>
   import { closeAlert } from "../game-state.svelte";
-  import FullImageAlert from "./ui/FullImageAlert.svelte";
   import spicesImage from "../assets/clues/spices.png";
+  import ClueAlert from "./ui/ClueAlert.svelte";
 </script>
 
-<FullImageAlert src={spicesImage} alt="Spice Rack" onClose={closeAlert} />
+<ClueAlert src={spicesImage} alt="Spice Rack" imageClass="large-clue-image" onClose={closeAlert} >
+  <p class="alert-text">Some spices seem more full than others.<br />Do those colors look familiar?</p>
+</ClueAlert>

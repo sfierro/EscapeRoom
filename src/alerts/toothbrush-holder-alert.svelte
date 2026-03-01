@@ -7,8 +7,8 @@
     } from "../game-state.svelte";
     import Alert from "../Alert.svelte";
     import ClueAlert from "./ui/ClueAlert.svelte";
-    import toothbrush2Image from "../assets/clues/toothbrush_2.png";
-    import toothbrush3Image from "../assets/clues/toothbrush_3.png";
+    import toothbrush2Image from "../assets/clues/toothbrush-2.png";
+    import toothbrush3Image from "../assets/clues/toothbrush-3.png";
 
     function placeToothbrush() {
         removeFromInventory("toothbrush");

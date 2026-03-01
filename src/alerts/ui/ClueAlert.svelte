@@ -1,12 +1,13 @@
 <script>
     import Alert from "../../Alert.svelte";
+    import ZoomableImage from "./ZoomableImage.svelte";
 
     const { src, alt, onClose, children, imageClass = "clue-image" } = $props();
 </script>
 
 <Alert {onClose}>
     <div class="clue-container">
-        <img {src} {alt} class={imageClass} />
+        <ZoomableImage {src} {alt} class={imageClass} />
         {#if children}
             {@render children()}
         {/if}

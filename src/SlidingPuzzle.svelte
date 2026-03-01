@@ -1,5 +1,5 @@
 <script>
-    import paintingUrl from "./assets/clues/painting.png";
+    import paintingUrl from "./assets/clues/sliding-puzzle-painting.png";
 
     const { onSolved: onSolvedCallback } = $props();
 
@@ -8,7 +8,7 @@
     let rows = 3;
     let imageWidth = 480; // px – change to resize the puzzle
     let imageHeight = 360; // px
-    let seed = 35; // deterministic shuffle – change to get a different layout
+    let seed = 37; // deterministic shuffle – change to get a different layout
 
     // ─── Constants ─────────────────────────────────────────────
     const totalTiles = cols * rows;
@@ -159,6 +159,8 @@
         position: relative;
         overflow: hidden;
         user-select: none;
+        border: 1.5px solid rgba(0, 0, 0, 0.35);
+        border-radius: 4px;
     }
 
     .tile {

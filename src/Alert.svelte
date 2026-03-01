@@ -61,7 +61,7 @@
     }
 
     .alert {
-        background-color: rgba(229, 229, 229, 1);
+        background-color: rgba(253, 253, 253, 1);
         color: #000;
         border-radius: 12px;
         padding: 24px 32px;

@@ -1,26 +1,40 @@
 <script>
-  import { gameState, closeAlert } from "../game-state.svelte";
-  import Alert from "../Alert.svelte";
-  import NumberLock from "../NumberLock.svelte";
-  import noteImage from "../assets/clues/note.png";
-  import ClueAlert from "./ui/ClueAlert.svelte";
+    import {
+        gameState,
+        closeAlert,
+        addToInventory,
+    } from "../game-state.svelte";
+    import TextAlert from "./ui/TextAlert.svelte";
+    import ActionButtonAlert from "./ui/ActionButtonAlert.svelte";
+    import Alert from "../Alert.svelte";
+    import SymbolLock from "../SymbolLock.svelte";
+
+    const CORRECT_CODE = ["star", "star", "square", "triangle", "circle"];
+
+    function collectScrewdriver() {
+        gameState.screwdriverCollected = true;
+        addToInventory("screwdriver");
+        closeAlert();
+    }
 </script>
 
-{#if gameState.safeOpen}
-  <ClueAlert
-    src={noteImage}
-    alt="note"
-    imageClass="large-clue-image"
-    onClose={closeAlert}
-  >
-    <p class="alert-text">Inside the safe you find a note.</p>
-  </ClueAlert>
-{:else}
-  <Alert onClose={closeAlert}>
-    <NumberLock
-      digits={4}
-      onEnter={(value) => value === "3341"}
-      onSuccess={() => (gameState.safeOpen = true)}
+{#if gameState.screwdriverCollected}
+    <TextAlert text="The safe is empty." onClose={closeAlert} />
+{:else if gameState.safeOpen}
+    <ActionButtonAlert
+        emoji="🪛"
+        text="Inside the safe you find a screwdriver."
+        buttonText="Take screwdriver"
+        onAction={collectScrewdriver}
+        onClose={closeAlert}
     />
-  </Alert>
+{:else}
+    <Alert onClose={closeAlert}>
+        <SymbolLock
+            slots={5}
+            onEnter={(values) =>
+                values.every((v, i) => v === CORRECT_CODE[i])}
+            onSuccess={() => (gameState.safeOpen = true)}
+        />
+    </Alert>
 {/if}

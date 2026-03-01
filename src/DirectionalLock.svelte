@@ -142,7 +142,7 @@
             </button>
         </div>
     </div>
-
+<!-- 
     <button
         class="control-button"
         onclick={clearSequence}
@@ -150,7 +150,7 @@
         aria-label="Clear"
     >
         Clear
-    </button>
+    </button> -->
 </div>
 
 <style>

@@ -13,7 +13,7 @@
         alt="Vitamin Bottles"
         onClose={closeAlert}
     >
-        <p class="alert-text">Inside the cabinet you find vitamins.</p>
+        <p class="alert-text">An assortment of colorful vitamins.</p>
     </ClueAlert>
 {:else}
     <Alert onClose={closeAlert}>

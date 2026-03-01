@@ -20,9 +20,11 @@ body {
 /* ─── Shared alert styles ─────────────────────────────────── */
 
 .alert-text {
-  font-size: 1.2rem;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1rem;
   font-weight: 600;
   text-align: center;
+  text-wrap: balance;
   padding: 8px 16px;
 }
 

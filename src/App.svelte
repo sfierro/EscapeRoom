@@ -9,7 +9,10 @@
   import { alertRegistry } from "./alert-registry";
   import Hotspot from "./Hotspot.svelte";
   import Navigation from "./Navigation.svelte";
+  import TextAlert from "./alerts/ui/TextAlert.svelte";
   import outsideImage from "./assets/rooms/outside.jpg";
+
+  let activeText = $state(null);
 
   // ─── Derived state ───────────────────────────────────────────
   const currentRoom = $derived(roomsById.get(gameState.currentRoomId));
@@ -53,6 +56,8 @@
   function handleHotspotClick(hotspot) {
     if (hotspot.navigateTo) {
       navigateToRoom(hotspot.navigateTo);
+    } else if (hotspot.text) {
+      activeText = hotspot.text;
     } else if (hotspot.alertId && alertRegistry[hotspot.alertId]) {
       gameState.activeHotspotId = hotspot.alertId;
     }
@@ -162,6 +167,9 @@
     <!-- ═══════════════ DYNAMIC ALERT SLOT ═══════════════ -->
     {#if ActiveAlert}
       <ActiveAlert />
+    {/if}
+    {#if activeText}
+      <TextAlert text={activeText} onClose={() => (activeText = null)} />
     {/if}
   </div>
 </main>
