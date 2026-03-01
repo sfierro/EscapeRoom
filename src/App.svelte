@@ -144,7 +144,7 @@
       <div class="inventory-container" class:hidden={gameState.showingOutside}>
         <div class="inventory-title">Inventory</div>
         <div class="inventory-slots">
-          {#each Array(12) as _, i}
+          {#each Array(8) as _, i}
             <div class="inventory-slot">
               {#if gameState.inventory[i] === "key"}
                 <span class="inventory-item">🔑</span>
@@ -158,11 +158,11 @@
         </div>
         <div class="action-buttons">
           <!-- <button class="action-btn" onclick={() => {}}>💡 Hint</button> -->
-          <button class="action-btn" onclick={resetGame}>🔄 Restart Game</button
+          <button class="action-btn" onclick={resetGame}>🔄 Restart</button
           >
-          <button class="action-btn" onclick={saveGame}>💾 Save Game</button>
+          <button class="action-btn" onclick={saveGame}>💾 Save</button>
           <button class="action-btn exit-btn" onclick={() => window.close()}
-            >🚪 Exit Game</button
+            >🚪 Exit</button
           >
         </div>
       </div>
@@ -262,7 +262,8 @@
 
   .inventory-title {
     color: white;
-    font-size: 18px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 1rem;
     font-weight: bold;
     margin-bottom: 12px;
     text-align: center;
@@ -271,7 +272,7 @@
 
   .inventory-slots {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     flex: 1;
     align-content: start;
@@ -309,8 +310,9 @@
   .action-btn {
     width: 100%;
     padding: 8px 12px;
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: 600;
+    font-family: "Courier New", Courier, monospace;
     color: #fff;
     background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.25);
