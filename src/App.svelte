@@ -157,7 +157,7 @@
           {/each}
         </div>
         <div class="action-buttons">
-          <button class="action-btn" onclick={() => {}}>💡 Hint</button>
+          <!-- <button class="action-btn" onclick={() => {}}>💡 Hint</button> -->
           <button class="action-btn" onclick={resetGame}>🔄 Restart Game</button
           >
           <button class="action-btn" onclick={saveGame}>💾 Save Game</button>
