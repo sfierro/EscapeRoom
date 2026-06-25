@@ -15,6 +15,8 @@ export interface GameStateSerialized {
     hintLevels: Record<string, number>;
     /** Per-sliding-puzzle tile arrays (so progress survives reopens). */
     slidingPuzzleStates: Record<string, (number | null)[]>;
+    /** Transition keys ("roomId->nextRoomId") whose unlocked next-arrow has been used. */
+    nextArrowsClicked: string[];
     elapsedMs: number;
 }
 
@@ -26,6 +28,7 @@ const EMPTY_SERIALIZED: GameStateSerialized = {
     flags: {},
     hintLevels: {},
     slidingPuzzleStates: {},
+    nextArrowsClicked: [],
     elapsedMs: 0,
 };
 
@@ -70,6 +73,7 @@ export function toJSON(): GameStateSerialized {
         flags: { ...gameState.flags },
         hintLevels: { ...gameState.hintLevels },
         slidingPuzzleStates: structuredClone(gameState.slidingPuzzleStates),
+        nextArrowsClicked: [...gameState.nextArrowsClicked],
         elapsedMs: getCurrentElapsedMs(),
     };
 }
@@ -92,6 +96,8 @@ export function fromJSON(data: GameStateSerialized): void {
         gameState.slidingPuzzleStates,
         structuredClone(data.slidingPuzzleStates),
     );
+    gameState.nextArrowsClicked.length = 0;
+    gameState.nextArrowsClicked.push(...(data.nextArrowsClicked ?? []));
     gameState.elapsedMs = data.elapsedMs ?? 0;
     gameState.activeHotspotId = null;
     gameState.activeText = null;

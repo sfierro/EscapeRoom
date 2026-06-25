@@ -48,6 +48,21 @@
         !!currentRoom?.next && check(currentRoom.next.requires),
     );
 
+    const nextTransitionKey = $derived(
+        currentRoom?.next
+            ? `${gameState.currentRoomId}->${currentRoom.next.roomId}`
+            : null,
+    );
+    // Flash the next arrow only for gated exits (those with a `requires`
+    // condition) once they unlock — until the player walks through them.
+    // Always-open exits (e.g. the bathroom) never flash.
+    const highlightNext = $derived(
+        hasNextRoom &&
+            !!currentRoom?.next?.requires &&
+            !!nextTransitionKey &&
+            !gameState.nextArrowsClicked.includes(nextTransitionKey),
+    );
+
     const displayImage = $derived(
         gameState.showingOutside ? game.outsideImage : currentRoom?.image,
     );
@@ -78,6 +93,12 @@
 
     function goToNextRoom() {
         if (currentRoom?.next) {
+            if (
+                nextTransitionKey &&
+                !gameState.nextArrowsClicked.includes(nextTransitionKey)
+            ) {
+                gameState.nextArrowsClicked.push(nextTransitionKey);
+            }
             navigateToRoom(currentRoom.next.roomId);
         }
     }
@@ -156,6 +177,7 @@
                     <Navigation
                         {hasPreviousRoom}
                         {hasNextRoom}
+                        {highlightNext}
                         onPrevious={goToPreviousRoom}
                         onNext={goToNextRoom}
                     />
