@@ -1,50 +1,61 @@
-// ─── Serialisable game‑state shape ──────────────────────────────
+import type { GameDefinition } from "./engine/types";
+import { evaluate } from "./engine/conditions";
+
+// ─── Serialisable game-state shape ──────────────────────────────
+// Everything the engine needs to fully reconstruct a game session.
+// Per-game flags + inventory + hint progress are stored generically
+// so the engine works for any GameDefinition.
 export interface GameStateSerialized {
+    gameId: string;
     currentRoomId: string;
     showingOutside: boolean;
     inventory: string[];
-    computerSolved: boolean;
-    canisterOpen: boolean;
-    toothbrushCollected: boolean;
-    toothbrushPlaced: boolean;
-    medicineCabinetOpen: boolean;
-    safeOpen: boolean;
-    tvCorrectChannel: boolean;
-    kitchenDrawerOpen: boolean;
-    screwdriverCollected: boolean;
-    drawerUnlocked: boolean;
-    drawerKeyCollected: boolean;
-    paintingPried: boolean;
+    flags: Record<string, boolean>;
+    /** objectiveId -> number of hints currently revealed. */
+    hintLevels: Record<string, number>;
+    /** Per-sliding-puzzle tile arrays (so progress survives reopens). */
+    slidingPuzzleStates: Record<string, (number | null)[]>;
     elapsedMs: number;
 }
 
-// ─── Default / initial values ───────────────────────────────────
-const DEFAULTS: GameStateSerialized = {
-    currentRoomId: 'single_bedroom',
+const EMPTY_SERIALIZED: GameStateSerialized = {
+    gameId: "",
+    currentRoomId: "",
     showingOutside: false,
     inventory: [],
-    computerSolved: false,
-    canisterOpen: false,
-    toothbrushCollected: false,
-    toothbrushPlaced: false,
-    medicineCabinetOpen: false,
-    safeOpen: false,
-    tvCorrectChannel: false,
-    kitchenDrawerOpen: false,
-    screwdriverCollected: false,
-    drawerUnlocked: false,
-    drawerKeyCollected: false,
-    paintingPried: false,
+    flags: {},
+    hintLevels: {},
+    slidingPuzzleStates: {},
     elapsedMs: 0,
 };
 
+// ─── Active game registry ───────────────────────────────────────
+// Pluggable so the engine can host multiple games down the road.
+// For now there is exactly one definition loaded at boot.
+let activeGame: GameDefinition | null = null;
+
+export function setActiveGame(def: GameDefinition): void {
+    activeGame = def;
+    if (!gameState.gameId || gameState.gameId !== def.id) {
+        resetGame();
+    }
+}
+
+export function getActiveGame(): GameDefinition {
+    if (!activeGame) {
+        throw new Error("No active game loaded. Call setActiveGame() first.");
+    }
+    return activeGame;
+}
+
 // ─── Reactive singleton ─────────────────────────────────────────
-// `activeHotspotId` is UI-only (not saved) – it controls which
-// alert popup is currently visible.
+// UI-only fields (activeHotspotId, hintPanelOpen, timer anchor,
+// escape total) are not serialised.
 export const gameState = $state({
-    ...DEFAULTS,
+    ...EMPTY_SERIALIZED,
     activeHotspotId: null as string | null,
-    slidingPuzzleTiles: null as (number | null)[] | null,
+    activeText: null as string | null,
+    hintPanelOpen: false,
     timerStartedAt: Date.now(),
     escapeTotalMs: null as number | null,
 });
@@ -52,51 +63,50 @@ export const gameState = $state({
 // ─── Serialization helpers ──────────────────────────────────────
 export function toJSON(): GameStateSerialized {
     return {
+        gameId: gameState.gameId,
         currentRoomId: gameState.currentRoomId,
         showingOutside: gameState.showingOutside,
         inventory: [...gameState.inventory],
-        computerSolved: gameState.computerSolved,
-        canisterOpen: gameState.canisterOpen,
-        toothbrushCollected: gameState.toothbrushCollected,
-        toothbrushPlaced: gameState.toothbrushPlaced,
-        medicineCabinetOpen: gameState.medicineCabinetOpen,
-        safeOpen: gameState.safeOpen,
-        tvCorrectChannel: gameState.tvCorrectChannel,
-        kitchenDrawerOpen: gameState.kitchenDrawerOpen,
-        screwdriverCollected: gameState.screwdriverCollected,
-        drawerUnlocked: gameState.drawerUnlocked,
-        drawerKeyCollected: gameState.drawerKeyCollected,
-        paintingPried: gameState.paintingPried,
+        flags: { ...gameState.flags },
+        hintLevels: { ...gameState.hintLevels },
+        slidingPuzzleStates: structuredClone(gameState.slidingPuzzleStates),
         elapsedMs: getCurrentElapsedMs(),
     };
 }
 
 export function fromJSON(data: GameStateSerialized): void {
+    gameState.gameId = data.gameId;
     gameState.currentRoomId = data.currentRoomId;
     gameState.showingOutside = data.showingOutside;
     gameState.inventory.length = 0;
     gameState.inventory.push(...data.inventory);
-    gameState.computerSolved = data.computerSolved;
-    gameState.canisterOpen = data.canisterOpen;
-    gameState.toothbrushCollected = data.toothbrushCollected;
-    gameState.toothbrushPlaced = data.toothbrushPlaced;
-    gameState.medicineCabinetOpen = data.medicineCabinetOpen;
-    gameState.safeOpen = data.safeOpen;
-    gameState.tvCorrectChannel = data.tvCorrectChannel;
-    gameState.kitchenDrawerOpen = data.kitchenDrawerOpen;
-    gameState.screwdriverCollected = data.screwdriverCollected;
-    gameState.drawerUnlocked = data.drawerUnlocked;
-    gameState.drawerKeyCollected = data.drawerKeyCollected;
-    gameState.paintingPried = data.paintingPried;
+    // Replace flag/hint/sliding maps in-place to keep reactivity sound.
+    for (const k of Object.keys(gameState.flags)) delete gameState.flags[k];
+    Object.assign(gameState.flags, data.flags);
+    for (const k of Object.keys(gameState.hintLevels))
+        delete gameState.hintLevels[k];
+    Object.assign(gameState.hintLevels, data.hintLevels);
+    for (const k of Object.keys(gameState.slidingPuzzleStates))
+        delete gameState.slidingPuzzleStates[k];
+    Object.assign(
+        gameState.slidingPuzzleStates,
+        structuredClone(data.slidingPuzzleStates),
+    );
     gameState.elapsedMs = data.elapsedMs ?? 0;
     gameState.activeHotspotId = null;
-    gameState.slidingPuzzleTiles = null;
+    gameState.activeText = null;
+    gameState.hintPanelOpen = false;
     gameState.timerStartedAt = Date.now();
     gameState.escapeTotalMs = null;
 }
 
 export function resetGame(): void {
-    fromJSON(DEFAULTS);
+    if (!activeGame) return;
+    fromJSON({
+        ...EMPTY_SERIALIZED,
+        gameId: activeGame.id,
+        currentRoomId: activeGame.startRoomId,
+    });
 }
 
 // ─── Electron IPC wrappers ──────────────────────────────────────
@@ -110,9 +120,15 @@ export async function saveGame(): Promise<void> {
 export async function loadGame(): Promise<void> {
     if (!window.api) return;
     const data = (await window.api.loadGame()) as GameStateSerialized | null;
-    if (data) {
-        fromJSON(data);
-    }
+    if (!data) return;
+    // Refuse to load a save from a different game (schema drift safety).
+    if (activeGame && data.gameId && data.gameId !== activeGame.id) return;
+    fromJSON({
+        ...EMPTY_SERIALIZED,
+        ...data,
+        gameId: activeGame?.id ?? data.gameId,
+        currentRoomId: data.currentRoomId || activeGame?.startRoomId || "",
+    });
 }
 
 // ─── Inventory helpers ──────────────────────────────────────────
@@ -133,6 +149,23 @@ export function hasItem(item: string): boolean {
     return gameState.inventory.includes(item);
 }
 
+// ─── Flag helpers ──────────────────────────────────────────────
+export function setFlag(id: string, value = true): void {
+    gameState.flags[id] = value;
+}
+
+export function getFlag(id: string): boolean {
+    return gameState.flags[id] === true;
+}
+
+// ─── Condition helper ───────────────────────────────────────────
+export function check(condition: string | undefined | null): boolean {
+    return evaluate(condition, {
+        flags: gameState.flags,
+        inventory: gameState.inventory,
+    });
+}
+
 // ─── Timer helpers ──────────────────────────────────────────────
 export function getCurrentElapsedMs(): number {
     return gameState.elapsedMs + (Date.now() - gameState.timerStartedAt);
@@ -148,12 +181,29 @@ export function formatElapsedTime(ms: number): string {
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
     if (hours > 0) {
-        return `${hours}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
+        return `${hours}h ${minutes.toString().padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
     }
-    return `${minutes}m ${seconds.toString().padStart(2, '0')}s`;
+    return `${minutes}m ${seconds.toString().padStart(2, "0")}s`;
 }
 
-// ─── Close the active alert ────────────────────────────────────
+// ─── Alert / hint UI helpers ────────────────────────────────────
+export function openPuzzle(puzzleId: string): void {
+    gameState.activeHotspotId = puzzleId;
+}
+
 export function closeAlert(): void {
     gameState.activeHotspotId = null;
+    gameState.activeText = null;
+}
+
+export function openText(text: string): void {
+    gameState.activeText = text;
+}
+
+export function openHintPanel(): void {
+    gameState.hintPanelOpen = true;
+}
+
+export function closeHintPanel(): void {
+    gameState.hintPanelOpen = false;
 }

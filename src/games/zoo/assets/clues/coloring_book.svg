@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#FBF6E5"/>
+  <rect x="20" y="20" width="760" height="560" fill="none" stroke="#3A2D1C" stroke-width="6"/>
+  <text x="400" y="90" font-family="Georgia, serif" font-size="44" font-weight="bold" fill="#3A2D1C" text-anchor="middle">A KID'S DRAWING</text>
+  <text x="400" y="135" font-family="Georgia, serif" font-size="22" font-style="italic" fill="#5A4530" text-anchor="middle">"my favorite snake's pattern"</text>
+  <!-- Symbol sequence: star circle triangle circle star -->
+  <g transform="translate(100, 300)">
+    <polygon points="0,-60 18,-21 66,-15 27,15 39,63 0,36 -39,63 -27,15 -66,-15 -18,-21" fill="#F1B92E"/>
+  </g>
+  <g transform="translate(250, 300)">
+    <circle cx="0" cy="0" r="60" fill="#D14545"/>
+  </g>
+  <g transform="translate(400, 300)">
+    <polygon points="0,-66 66,54 -66,54" fill="#3A8C3A"/>
+  </g>
+  <g transform="translate(550, 300)">
+    <circle cx="0" cy="0" r="60" fill="#D14545"/>
+  </g>
+  <g transform="translate(700, 300)">
+    <polygon points="0,-60 18,-21 66,-15 27,15 39,63 0,36 -39,63 -27,15 -66,-15 -18,-21" fill="#F1B92E"/>
+  </g>
+  <text x="400" y="500" font-family="monospace" font-size="20" fill="#3A2D1C" text-anchor="middle">scribbled in crayon, signed "M, age 7"</text>
+</svg>

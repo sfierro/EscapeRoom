@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="sunsetSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF8C42"/>
+      <stop offset="50%" stop-color="#FF4F2C"/>
+      <stop offset="100%" stop-color="#7E1F0A"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="780" fill="url(#sunsetSky)"/>
+  <rect y="780" width="1920" height="300" fill="#2A1B0F"/>
+  <text x="960" y="130" font-family="Georgia, serif" font-size="92" font-weight="bold" fill="#FFF6D8" text-anchor="middle">MAIN GATE</text>
+  <text x="960" y="190" font-family="Georgia, serif" font-size="34" font-style="italic" fill="#FFE0AD" text-anchor="middle">"Just one more lock"</text>
+  <!-- Sun -->
+  <circle cx="960" cy="560" r="120" fill="#FFE45A" opacity="0.85"/>
+  <!-- Combo lock (left) -->
+  <g transform="translate(420, 700)">
+    <rect x="-130" y="-150" width="260" height="280" fill="#444" stroke="#1a1a1a" stroke-width="6" rx="14"/>
+    <circle cx="0" cy="-60" r="60" fill="#222" stroke="#1a1a1a" stroke-width="4"/>
+    <text x="0" y="-50" font-family="monospace" font-size="22" font-weight="bold" fill="#FFD700" text-anchor="middle">COMBO</text>
+    <rect x="-90" y="30" width="180" height="80" fill="#1a1a1a" stroke="#444" stroke-width="3"/>
+    <text x="0" y="80" font-family="monospace" font-size="32" font-weight="bold" fill="#FFD700" text-anchor="middle">5-DIGIT</text>
+  </g>
+  <!-- Main gate (center) -->
+  <g transform="translate(960, 720)">
+    <rect x="-220" y="-260" width="440" height="380" fill="#1F0F08" stroke="#000" stroke-width="8" rx="6"/>
+    <line x1="-180" y1="-220" x2="-180" y2="80" stroke="#FFD700" stroke-width="3"/>
+    <line x1="-120" y1="-220" x2="-120" y2="80" stroke="#FFD700" stroke-width="3"/>
+    <line x1="-60" y1="-220" x2="-60" y2="80" stroke="#FFD700" stroke-width="3"/>
+    <line x1="0" y1="-220" x2="0" y2="80" stroke="#FFD700" stroke-width="3"/>
+    <line x1="60" y1="-220" x2="60" y2="80" stroke="#FFD700" stroke-width="3"/>
+    <line x1="120" y1="-220" x2="120" y2="80" stroke="#FFD700" stroke-width="3"/>
+    <line x1="180" y1="-220" x2="180" y2="80" stroke="#FFD700" stroke-width="3"/>
+    <!-- Stylized padlock -->
+    <g transform="translate(0, -10)">
+      <path d="M -34 -10 Q -34 -60 0 -60 Q 34 -60 34 -10" fill="none" stroke="#FFD700" stroke-width="10"/>
+      <rect x="-48" y="-10" width="96" height="70" rx="8" fill="#FFD700" stroke="#7a5a00" stroke-width="3"/>
+      <circle cx="0" cy="20" r="8" fill="#7a5a00"/>
+      <rect x="-3" y="20" width="6" height="22" fill="#7a5a00"/>
+    </g>
+    <text x="0" y="100" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="#FFD700" text-anchor="middle">EXIT</text>
+  </g>
+  <!-- Bushes (right, red herring) -->
+  <g transform="translate(1480, 850)">
+    <ellipse cx="0" cy="0" rx="160" ry="80" fill="#2F4F2F"/>
+    <ellipse cx="-60" cy="-30" rx="80" ry="50" fill="#3A6B3A"/>
+    <ellipse cx="60" cy="-20" rx="90" ry="60" fill="#3A6B3A"/>
+    <ellipse cx="0" cy="-50" rx="70" ry="45" fill="#4F8F4F"/>
+  </g>
+</svg>

@@ -1,25 +1,26 @@
 <script>
-    import paintingUrl from "./assets/clues/sliding-puzzle-painting.png";
     import { gameState } from "./game-state.svelte";
 
-    const { onSolved: onSolvedCallback } = $props();
+    const {
+        puzzleId,
+        image,
+        cols = 3,
+        rows = 3,
+        imageWidth = 480,
+        imageHeight = 360,
+        seed = 37,
+        onSolved: onSolvedCallback,
+    } = $props();
 
-    // ─── Configurable ──────────────────────────────────────────
-    let cols = 3;
-    let rows = 3;
-    let imageWidth = 480; // px – change to resize the puzzle
-    let imageHeight = 360; // px
-    let seed = 37; // deterministic shuffle – change to get a different layout
+    const totalTiles = $derived(cols * rows);
+    const emptyTileGoal = $derived(rows * cols - 1);
+    const tileW = $derived(imageWidth / cols);
+    const tileH = $derived(imageHeight / rows);
 
-    // ─── Constants ─────────────────────────────────────────────
-    const totalTiles = cols * rows;
-    const emptyTileGoal = rows * cols - 1; // bottom-right position
-    const tileW = imageWidth / cols;
-    const tileH = imageHeight / rows;
-
-    // Every tile number except the one permanently removed
-    const tileNumbers = Array.from({ length: totalTiles }, (_, i) => i).filter(
-        (i) => i !== emptyTileGoal,
+    const tileNumbers = $derived(
+        Array.from({ length: totalTiles }, (_, i) => i).filter(
+            (i) => i !== emptyTileGoal,
+        ),
     );
 
     // ─── Seeded PRNG (mulberry32) ──────────────────────────────
@@ -33,7 +34,6 @@
         };
     }
 
-    // ─── Puzzle helpers ────────────────────────────────────────
     function createSolvedState() {
         return Array.from({ length: totalTiles }, (_, i) =>
             i === emptyTileGoal ? null : i,
@@ -50,9 +50,8 @@
     }
 
     /**
-     * For even-width grids the solvability rule is:
-     *   (inversions + |blankRow − goalBlankRow|) must be even.
-     * For odd-width grids only inversions parity matters.
+     * Even-width grids: (inversions + |blankRow − goalBlankRow|) must be even.
+     * Odd-width grids: inversions parity is enough.
      */
     function isSolvable(arr) {
         const inv = countInversions(arr);
@@ -67,7 +66,6 @@
         return arr.every((v, i) => v === goal[i]);
     }
 
-    /** Fisher-Yates shuffle with seeded PRNG – deterministic for a given seed. */
     function shuffle() {
         const rand = mulberry32(seed);
         let arr;
@@ -81,15 +79,17 @@
         return arr;
     }
 
-    // ─── Reactive state ────────────────────────────────────────
-    // Restore from in-memory game state if available, otherwise shuffle fresh.
-    if (!gameState.slidingPuzzleTiles) {
-        gameState.slidingPuzzleTiles = shuffle();
-    }
-    let tiles = $derived(gameState.slidingPuzzleTiles);
-    let solved = $derived(checkSolved(tiles));
+    // Initialize tile state lazily once per (puzzleId).
+    // `$effect.pre` runs before the DOM is created so `tiles` is populated
+    // by the first render.
+    $effect.pre(() => {
+        if (!gameState.slidingPuzzleStates[puzzleId]) {
+            gameState.slidingPuzzleStates[puzzleId] = shuffle();
+        }
+    });
+    let tiles = $derived(gameState.slidingPuzzleStates[puzzleId] ?? []);
+    let solved = $derived(tiles.length > 0 && checkSolved(tiles));
 
-    // ─── Interaction ───────────────────────────────────────────
     function isAdjacent(a, b) {
         const rowA = Math.floor(a / cols),
             colA = a % cols;
@@ -116,10 +116,6 @@
     class="puzzle-container"
     style="width: {imageWidth}px; height: {imageHeight}px;"
 >
-    <!--
-        Keyed each over tile *numbers* (not positions) so the DOM element
-        for each tile persists across moves → CSS transition fires.
-    -->
     {#each tileNumbers as tile (tile)}
         {@const pos = tiles.indexOf(tile)}
         <button
@@ -131,7 +127,7 @@
                 height: {tileH}px;
                 left: {(pos % cols) * tileW}px;
                 top: {Math.floor(pos / cols) * tileH}px;
-                background-image: url('{paintingUrl}');
+                background-image: url('{image}');
                 background-size: {imageWidth}px {imageHeight}px;
                 background-position: -{(tile % cols) * tileW}px -{Math.floor(
                 tile / cols,
@@ -141,7 +137,6 @@
         ></button>
     {/each}
 
-    <!-- When solved, fill in the missing tile so the full image appears -->
     {#if solved}
         <div
             class="tile solved missing-tile"
@@ -150,7 +145,7 @@
                 height: {tileH}px;
                 left: {(emptyTileGoal % cols) * tileW}px;
                 top: {Math.floor(emptyTileGoal / cols) * tileH}px;
-                background-image: url('{paintingUrl}');
+                background-image: url('{image}');
                 background-size: {imageWidth}px {imageHeight}px;
                 background-position: -{(emptyTileGoal % cols) *
                 tileW}px -{Math.floor(emptyTileGoal / cols) * tileH}px;

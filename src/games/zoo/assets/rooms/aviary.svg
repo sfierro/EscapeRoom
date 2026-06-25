@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="aviarySky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#87CEEB"/>
+      <stop offset="100%" stop-color="#C9E8F5"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#aviarySky)"/>
+  <!-- Distant clouds -->
+  <ellipse cx="300" cy="220" rx="160" ry="50" fill="#FFF" opacity="0.8"/>
+  <ellipse cx="1500" cy="160" rx="200" ry="60" fill="#FFF" opacity="0.7"/>
+  <ellipse cx="900" cy="280" rx="100" ry="30" fill="#FFF" opacity="0.6"/>
+  <text x="960" y="120" font-family="Georgia, serif" font-size="92" font-weight="bold" fill="#0F2D6B" text-anchor="middle">AVIARY</text>
+  <text x="960" y="180" font-family="Georgia, serif" font-size="34" font-style="italic" fill="#1B3F7F" text-anchor="middle">"Take flight"</text>
+  <!-- Bird cage (center) -->
+  <g transform="translate(960, 620)">
+    <ellipse cx="0" cy="200" rx="180" ry="20" fill="#444"/>
+    <rect x="-160" y="-180" width="320" height="360" fill="none" stroke="#333" stroke-width="6" rx="160"/>
+    <line x1="-140" y1="-160" x2="-140" y2="180" stroke="#333" stroke-width="4"/>
+    <line x1="-100" y1="-175" x2="-100" y2="180" stroke="#333" stroke-width="4"/>
+    <line x1="-60" y1="-180" x2="-60" y2="180" stroke="#333" stroke-width="4"/>
+    <line x1="-20" y1="-180" x2="-20" y2="180" stroke="#333" stroke-width="4"/>
+    <line x1="20" y1="-180" x2="20" y2="180" stroke="#333" stroke-width="4"/>
+    <line x1="60" y1="-180" x2="60" y2="180" stroke="#333" stroke-width="4"/>
+    <line x1="100" y1="-175" x2="100" y2="180" stroke="#333" stroke-width="4"/>
+    <line x1="140" y1="-160" x2="140" y2="180" stroke="#333" stroke-width="4"/>
+    <!-- Stylized parrot perched on bar -->
+    <g transform="translate(0, 20)">
+      <ellipse cx="0" cy="0" rx="40" ry="56" fill="#E63946"/>
+      <ellipse cx="-8" cy="-40" rx="26" ry="22" fill="#E63946"/>
+      <polygon points="-22,-44 -42,-36 -22,-32" fill="#F1A208"/>
+      <circle cx="-14" cy="-44" r="4" fill="#1A1A1A"/>
+      <path d="M 18 -10 Q 50 0 30 30 Z" fill="#1D7874"/>
+    </g>
+    <text x="0" y="100" font-family="monospace" font-size="20" font-weight="bold" fill="#0F2D6B" text-anchor="middle">D-PAD LOCK</text>
+  </g>
+  <!-- Empty nest (right, red herring) -->
+  <g transform="translate(1500, 700)">
+    <ellipse cx="0" cy="0" rx="120" ry="60" fill="#8B5A2B" stroke="#3a2210" stroke-width="4"/>
+    <ellipse cx="0" cy="-10" rx="100" ry="40" fill="#6B4320"/>
+    <text x="0" y="80" font-family="Georgia, serif" font-size="22" fill="#3a2210" text-anchor="middle">empty nest</text>
+  </g>
+  <!-- Wing chart on left wall (red herring) -->
+  <g transform="translate(320, 600)">
+    <rect x="-130" y="-150" width="260" height="300" fill="#FFF" stroke="#0F2D6B" stroke-width="6"/>
+    <text x="0" y="-100" font-family="Georgia, serif" font-size="26" font-weight="bold" fill="#0F2D6B" text-anchor="middle">WING CHART</text>
+    <line x1="-100" y1="-50" x2="100" y2="-50" stroke="#1B3F7F" stroke-width="2"/>
+    <text x="-80" y="-25" font-family="monospace" font-size="18" fill="#1B3F7F">eagle</text>
+    <text x="60" y="-25" font-family="monospace" font-size="18" fill="#1B3F7F">7ft</text>
+    <text x="-80" y="0" font-family="monospace" font-size="18" fill="#1B3F7F">swan</text>
+    <text x="60" y="0" font-family="monospace" font-size="18" fill="#1B3F7F">8ft</text>
+    <text x="-80" y="25" font-family="monospace" font-size="18" fill="#1B3F7F">wren</text>
+    <text x="60" y="25" font-family="monospace" font-size="18" fill="#1B3F7F">0.5ft</text>
+  </g>
+</svg>

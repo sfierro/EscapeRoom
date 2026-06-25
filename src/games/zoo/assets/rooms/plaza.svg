@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFD89B"/>
+      <stop offset="100%" stop-color="#F89B5E"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#A88A5C"/>
+      <stop offset="100%" stop-color="#6B5436"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="700" fill="url(#sky)"/>
+  <rect y="700" width="1920" height="380" fill="url(#ground)"/>
+
+  <text x="960" y="140" font-family="Georgia, serif" font-size="92" font-weight="bold" fill="#5A2D0C" text-anchor="middle">ZOO ENTRY PLAZA</text>
+  <text x="960" y="200" font-family="Georgia, serif" font-size="38" font-style="italic" fill="#5A2D0C" text-anchor="middle">"Where the wild things begin"</text>
+
+  <!-- Info kiosk (top-left) -->
+  <g transform="translate(280, 480)">
+    <rect x="-110" y="-90" width="220" height="180" fill="#8B5A2B" stroke="#3a2210" stroke-width="6" rx="8"/>
+    <rect x="-95" y="-75" width="190" height="120" fill="#FFF" stroke="#3a2210" stroke-width="3"/>
+    <text x="0" y="-30" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="#5A2D0C" text-anchor="middle">TODAY</text>
+    <text x="0" y="0" font-family="monospace" font-size="20" fill="#222" text-anchor="middle">Adult  $4</text>
+    <text x="0" y="22" font-family="monospace" font-size="20" fill="#222" text-anchor="middle">Child  $1</text>
+    <rect x="-6" y="50" width="12" height="40" fill="#3a2210"/>
+  </g>
+
+  <!-- Vending machine (center-left) -->
+  <g transform="translate(700, 560)">
+    <rect x="-100" y="-200" width="200" height="400" fill="#C13B3B" stroke="#3a0a0a" stroke-width="6" rx="12"/>
+    <rect x="-80" y="-180" width="160" height="240" fill="#1a1a1a" stroke="#3a0a0a" stroke-width="3"/>
+    <text x="0" y="-100" font-family="monospace" font-size="28" font-weight="bold" fill="#FFD700" text-anchor="middle">VEND</text>
+    <circle cx="-40" cy="-40" r="14" fill="#222" stroke="#666" stroke-width="2"/>
+    <circle cx="0" cy="-40" r="14" fill="#222" stroke="#666" stroke-width="2"/>
+    <circle cx="40" cy="-40" r="14" fill="#222" stroke="#666" stroke-width="2"/>
+    <text x="-40" y="-34" font-family="monospace" font-size="16" fill="#FFD700" text-anchor="middle">?</text>
+    <text x="0" y="-34" font-family="monospace" font-size="16" fill="#FFD700" text-anchor="middle">?</text>
+    <text x="40" y="-34" font-family="monospace" font-size="16" fill="#FFD700" text-anchor="middle">?</text>
+    <rect x="-50" y="100" width="100" height="60" fill="#000" stroke="#3a0a0a" stroke-width="3"/>
+    <text x="0" y="138" font-family="monospace" font-size="16" fill="#FFD700" text-anchor="middle">$ COIN</text>
+  </g>
+
+  <!-- Gift shop window (center-right) -->
+  <g transform="translate(1200, 500)">
+    <rect x="-180" y="-160" width="360" height="320" fill="#4A7BC8" stroke="#0F2D6B" stroke-width="6" rx="6"/>
+    <rect x="-160" y="-140" width="320" height="240" fill="#B9DCFC" stroke="#0F2D6B" stroke-width="3"/>
+    <text x="0" y="-90" font-family="Georgia, serif" font-size="32" font-weight="bold" fill="#0F2D6B" text-anchor="middle">GIFT SHOP</text>
+    <text x="0" y="-30" font-family="monospace" font-size="18" fill="#0F2D6B" text-anchor="middle">Password locked</text>
+    <!-- Stylized window display: three colored animal silhouettes -->
+    <g transform="translate(-90, 40)">
+      <ellipse cx="0" cy="0" rx="28" ry="20" fill="#D9A227"/>
+      <circle cx="-18" cy="-8" r="14" fill="#D9A227"/>
+    </g>
+    <g transform="translate(0, 40)">
+      <ellipse cx="0" cy="0" rx="34" ry="22" fill="#7A4F1F"/>
+      <ellipse cx="-22" cy="-4" r="10" rx="14" ry="10" fill="#7A4F1F"/>
+      <line x1="22" y1="0" x2="40" y2="-10" stroke="#7A4F1F" stroke-width="6"/>
+    </g>
+    <g transform="translate(90, 40)">
+      <ellipse cx="0" cy="0" rx="22" ry="26" fill="#222"/>
+      <ellipse cx="0" cy="-2" rx="14" ry="18" fill="#FFF"/>
+    </g>
+  </g>
+
+  <!-- Bench (bottom-center, red herring) -->
+  <g transform="translate(960, 900)">
+    <rect x="-150" y="-30" width="300" height="20" fill="#7A4F1F" stroke="#3a2210" stroke-width="3"/>
+    <rect x="-135" y="-10" width="20" height="60" fill="#7A4F1F" stroke="#3a2210" stroke-width="3"/>
+    <rect x="115" y="-10" width="20" height="60" fill="#7A4F1F" stroke="#3a2210" stroke-width="3"/>
+  </g>
+
+  <!-- Sun -->
+  <circle cx="1700" cy="180" r="80" fill="#FFE45A"/>
+  <circle cx="1700" cy="180" r="60" fill="#FFD700"/>
+</svg>

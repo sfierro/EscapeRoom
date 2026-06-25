@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="freedom" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#A4E1FB"/>
+      <stop offset="50%" stop-color="#7FCBFA"/>
+      <stop offset="100%" stop-color="#3FA8E0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#freedom)"/>
+  <!-- Sun -->
+  <circle cx="1450" cy="240" r="120" fill="#FFE45A"/>
+  <circle cx="1450" cy="240" r="90" fill="#FFD700"/>
+  <!-- Birds -->
+  <g fill="none" stroke="#1a1a1a" stroke-width="3">
+    <path d="M 320 320 Q 350 290 380 320 Q 410 290 440 320" />
+    <path d="M 560 240 Q 580 220 600 240 Q 620 220 640 240" />
+    <path d="M 800 360 Q 820 340 840 360 Q 860 340 880 360" />
+  </g>
+  <!-- Grass -->
+  <rect y="880" width="1920" height="200" fill="#3FA94A"/>
+  <ellipse cx="200" cy="900" rx="180" ry="40" fill="#48BE57"/>
+  <ellipse cx="1700" cy="910" rx="220" ry="50" fill="#48BE57"/>
+</svg>

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="reptBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3A2D1C"/>
+      <stop offset="100%" stop-color="#1A1409"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#reptBg)"/>
+  <text x="960" y="120" font-family="Georgia, serif" font-size="88" font-weight="bold" fill="#DCC592" text-anchor="middle">REPTILE HOUSE</text>
+  <text x="960" y="180" font-family="Georgia, serif" font-size="32" font-style="italic" fill="#A39068" text-anchor="middle">"Cold-blooded, warm-hearted"</text>
+
+  <!-- Habitat panel (left) - five empty slots, the original key is missing -->
+  <g transform="translate(360, 600)">
+    <rect x="-160" y="-180" width="320" height="360" fill="#FFF" stroke="#D4A857" stroke-width="6"/>
+    <text x="0" y="-130" font-family="Georgia, serif" font-size="28" font-weight="bold" fill="#3A2D1C" text-anchor="middle">HABITAT PANEL</text>
+    <line x1="-140" y1="-100" x2="140" y2="-100" stroke="#3A2D1C" stroke-width="3"/>
+    <text x="0" y="-60" font-family="monospace" font-size="22" fill="#3A2D1C" text-anchor="middle">SYMBOL CODE</text>
+    <!-- Five empty slots, awaiting symbols -->
+    <g transform="translate(-120, 20)">
+      <rect x="-20" y="-20" width="40" height="40" fill="none" stroke="#3A2D1C" stroke-width="3" stroke-dasharray="4 3"/>
+      <text x="0" y="8" font-family="monospace" font-size="28" font-weight="bold" fill="#A39068" text-anchor="middle">?</text>
+    </g>
+    <g transform="translate(-60, 20)">
+      <rect x="-20" y="-20" width="40" height="40" fill="none" stroke="#3A2D1C" stroke-width="3" stroke-dasharray="4 3"/>
+      <text x="0" y="8" font-family="monospace" font-size="28" font-weight="bold" fill="#A39068" text-anchor="middle">?</text>
+    </g>
+    <g transform="translate(0, 20)">
+      <rect x="-20" y="-20" width="40" height="40" fill="none" stroke="#3A2D1C" stroke-width="3" stroke-dasharray="4 3"/>
+      <text x="0" y="8" font-family="monospace" font-size="28" font-weight="bold" fill="#A39068" text-anchor="middle">?</text>
+    </g>
+    <g transform="translate(60, 20)">
+      <rect x="-20" y="-20" width="40" height="40" fill="none" stroke="#3A2D1C" stroke-width="3" stroke-dasharray="4 3"/>
+      <text x="0" y="8" font-family="monospace" font-size="28" font-weight="bold" fill="#A39068" text-anchor="middle">?</text>
+    </g>
+    <g transform="translate(120, 20)">
+      <rect x="-20" y="-20" width="40" height="40" fill="none" stroke="#3A2D1C" stroke-width="3" stroke-dasharray="4 3"/>
+      <text x="0" y="8" font-family="monospace" font-size="28" font-weight="bold" fill="#A39068" text-anchor="middle">?</text>
+    </g>
+    <text x="0" y="100" font-family="monospace" font-size="18" fill="#3A2D1C" text-anchor="middle">pattern source: lost</text>
+  </g>
+
+  <!-- Snake terrarium (center) -->
+  <g transform="translate(960, 620)">
+    <rect x="-200" y="-200" width="400" height="400" fill="#2A4D2A" stroke="#1A1409" stroke-width="8" rx="6"/>
+    <rect x="-180" y="-180" width="360" height="360" fill="#0F2D0F" stroke="#1A1409" stroke-width="4"/>
+    <!-- Stylized coiled snake -->
+    <g transform="translate(0, 30)">
+      <path d="M -120 60 Q -160 0 -100 -40 Q -20 -100 60 -40 Q 140 0 60 60 Q 0 100 -40 60" fill="none" stroke="#7A9D3A" stroke-width="22" stroke-linecap="round"/>
+      <path d="M -120 60 Q -160 0 -100 -40 Q -20 -100 60 -40 Q 140 0 60 60 Q 0 100 -40 60" fill="none" stroke="#A8C75D" stroke-width="10" stroke-linecap="round" stroke-dasharray="6 14"/>
+      <circle cx="-118" cy="58" r="14" fill="#7A9D3A"/>
+      <circle cx="-122" cy="54" r="3" fill="#1A1409"/>
+      <line x1="-130" y1="62" x2="-150" y2="66" stroke="#C13B3B" stroke-width="3"/>
+    </g>
+    <text x="0" y="140" font-family="monospace" font-size="22" font-weight="bold" fill="#DCC592" text-anchor="middle">TERRARIUM LOCK</text>
+  </g>
+
+  <!-- Info card (right, red herring) -->
+  <g transform="translate(1560, 600)">
+    <rect x="-130" y="-150" width="260" height="300" fill="#F5E8C0" stroke="#3A2D1C" stroke-width="6"/>
+    <text x="0" y="-110" font-family="Georgia, serif" font-size="24" font-weight="bold" fill="#3A2D1C" text-anchor="middle">DID YOU KNOW?</text>
+    <text x="0" y="-60" font-family="Georgia, serif" font-size="18" fill="#3A2D1C" text-anchor="middle">Snakes have no</text>
+    <text x="0" y="-40" font-family="Georgia, serif" font-size="18" fill="#3A2D1C" text-anchor="middle">eyelids - they</text>
+    <text x="0" y="-20" font-family="Georgia, serif" font-size="18" fill="#3A2D1C" text-anchor="middle">sleep with eyes</text>
+    <text x="0" y="0" font-family="Georgia, serif" font-size="18" fill="#3A2D1C" text-anchor="middle">wide open.</text>
+    <!-- Small snake silhouette -->
+    <g transform="translate(0, 80)">
+      <path d="M -40 0 Q -20 -20 0 0 Q 20 20 40 0" fill="none" stroke="#7A9D3A" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="40" cy="0" r="6" fill="#7A9D3A"/>
+    </g>
+  </g>
+</svg>
