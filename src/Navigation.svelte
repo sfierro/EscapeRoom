@@ -1,5 +1,5 @@
 <script>
-    const { hasPreviousRoom, hasNextRoom, onPrevious, onNext } = $props();
+    const { hasPreviousRoom, hasNextRoom, highlightNext = false, onPrevious, onNext } = $props();
 </script>
 
 <div class="navigation-container">
@@ -29,6 +29,7 @@
     {#if hasNextRoom}
         <button
             class="nav-button nav-button-right"
+            class:nav-button-highlight={highlightNext}
             onclick={onNext}
             aria-label="Next room"
         >
@@ -93,6 +94,18 @@
         transform: scale(1.1);
     }
 
+    .nav-button-highlight {
+        color: #00ff66;
+        border-color: #00ff66;
+        animation:
+            navArrowIn 0.5s ease-out,
+            navArrowFlash 1s ease-in-out infinite;
+    }
+
+    .nav-button-highlight:hover {
+        border-color: #00ff66;
+    }
+
     .nav-button:active {
         transform: scale(0.95);
     }
@@ -114,6 +127,24 @@
         to {
             opacity: 1;
             transform: scale(1);
+        }
+    }
+
+    @keyframes navArrowFlash {
+        0%,
+        100% {
+            color: #00ff66;
+            border-color: #00ff66;
+            box-shadow: 0 0 8px rgba(0, 255, 102, 0.4);
+            transform: scale(1);
+        }
+        50% {
+            color: #aaffcc;
+            border-color: #aaffcc;
+            box-shadow:
+                0 0 20px rgba(0, 255, 102, 0.9),
+                0 0 36px rgba(0, 255, 102, 0.6);
+            transform: scale(1.12);
         }
     }
 </style>

@@ -15,6 +15,10 @@ export interface GameStateSerialized {
     drawerUnlocked: boolean;
     drawerKeyCollected: boolean;
     paintingPried: boolean;
+    /** Transition keys ("roomId->nextRoomId") whose unlocked next-arrow has been clicked. */
+    nextArrowsClicked: string[];
+    /** Room ids the player has navigated to (used to detect genuinely new rooms). */
+    visitedRooms: string[];
     elapsedMs: number;
 }
 
@@ -35,6 +39,8 @@ const DEFAULTS: GameStateSerialized = {
     drawerUnlocked: false,
     drawerKeyCollected: false,
     paintingPried: false,
+    nextArrowsClicked: [],
+    visitedRooms: ['single_bedroom'],
     elapsedMs: 0,
 };
 
@@ -67,6 +73,8 @@ export function toJSON(): GameStateSerialized {
         drawerUnlocked: gameState.drawerUnlocked,
         drawerKeyCollected: gameState.drawerKeyCollected,
         paintingPried: gameState.paintingPried,
+        nextArrowsClicked: [...gameState.nextArrowsClicked],
+        visitedRooms: [...gameState.visitedRooms],
         elapsedMs: getCurrentElapsedMs(),
     };
 }
@@ -88,6 +96,10 @@ export function fromJSON(data: GameStateSerialized): void {
     gameState.drawerUnlocked = data.drawerUnlocked;
     gameState.drawerKeyCollected = data.drawerKeyCollected;
     gameState.paintingPried = data.paintingPried;
+    gameState.nextArrowsClicked.length = 0;
+    gameState.nextArrowsClicked.push(...(data.nextArrowsClicked ?? []));
+    gameState.visitedRooms.length = 0;
+    gameState.visitedRooms.push(...(data.visitedRooms ?? [data.currentRoomId]));
     gameState.elapsedMs = data.elapsedMs ?? 0;
     gameState.activeHotspotId = null;
     gameState.slidingPuzzleTiles = null;

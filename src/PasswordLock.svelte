@@ -75,6 +75,7 @@
             </svg>
         </button>
     </div>
+    <p class="text-sm text-gray-500 pt-2 italic">Case sensitive</p>
 </div>
 
 <style>

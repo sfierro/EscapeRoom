@@ -38,6 +38,17 @@
     !!currentRoom?.nextRoomId &&
       isNextRoomUnlocked(gameState.currentRoomId, currentRoom.nextRoomId),
   );
+  const nextTransitionKey = $derived(
+    currentRoom?.nextRoomId
+      ? `${gameState.currentRoomId}->${currentRoom.nextRoomId}`
+      : null,
+  );
+  const highlightNext = $derived(
+    hasNextRoom &&
+      !!nextTransitionKey &&
+      !gameState.nextArrowsClicked.includes(nextTransitionKey) &&
+      !gameState.visitedRooms.includes(currentRoom.nextRoomId),
+  );
 
   const displayImage = $derived(
     gameState.showingOutside ? outsideImage : currentRoom.image,
@@ -57,6 +68,9 @@
     if (roomsById.has(roomId)) {
       gameState.currentRoomId = roomId;
       gameState.showingOutside = false;
+      if (!gameState.visitedRooms.includes(roomId)) {
+        gameState.visitedRooms.push(roomId);
+      }
     }
   }
 
@@ -68,6 +82,9 @@
 
   function goToNextRoom() {
     if (currentRoom.nextRoomId) {
+      if (nextTransitionKey && !gameState.nextArrowsClicked.includes(nextTransitionKey)) {
+        gameState.nextArrowsClicked.push(nextTransitionKey);
+      }
       navigateToRoom(currentRoom.nextRoomId);
     }
   }
@@ -140,6 +157,7 @@
           <Navigation
             {hasPreviousRoom}
             {hasNextRoom}
+            {highlightNext}
             onPrevious={goToPreviousRoom}
             onNext={goToNextRoom}
           />
